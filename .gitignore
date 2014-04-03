@@ -3,6 +3,7 @@
 # Visual Studio 
 *.suo
 *.user
+*.bsc
 *.sln.docstates
 *.obj
 *.pch
@@ -65,3 +66,10 @@ config.cfg
 # shader files
 *.tmp
 
+sp/game/mod_hl2/normal.tga
+sp/game/mod_hl2/stats.txt
+sp/game/mod_hl2/albedo.tga
+sp/game/mod_hl2/modelsounds.cache
+sp/game/mod_hl2/sound/sound.cache
+sp/game/mod_hl2/voice_ban.dt
+*.ain
