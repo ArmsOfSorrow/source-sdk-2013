@@ -12,12 +12,16 @@
 #include "playerlocaldata.h"
 #include "util.h"
 
+
+//#include "VGuiMatSurface/IMatSystemSurface.h"
+//#include <vgui_controls/Controls.h>
+
+
+
 #include "memdbgon.h"
 
 #define SCAN_TIME_NORMAL 3.0f
 #define SCAN_RANGE_NORMAL 512 //test range, might change during balancing (if I ever come that far)
-
-extern CBaseEntity *FindEntityForward(CBasePlayer *pMe, bool fHull);
 
 class CWeaponScanvisor : public CBaseHLCombatWeapon
 {
@@ -38,8 +42,9 @@ private:
 	bool m_bIsCurrentlyScanning;
 	CBasePlayer *m_pPlayer;
 	CBaseEntity *m_pTarget; //this should be an own type, to vary scanning times
-	void AcquireTarget(CBaseEntity *ent);
-	CBaseEntity *FindPickerEntity(CBasePlayer *pPlayer);
+	
+	void AcquireTarget();
+	void LockOnTarget(CBaseEntity *pEnt);
 };
 
 LINK_ENTITY_TO_CLASS(weapon_scanvisor, CWeaponScanvisor);
@@ -51,11 +56,6 @@ END_SEND_TABLE();
 
 BEGIN_DATADESC(CWeaponScanvisor)
 END_DATADESC()
-
-//CBaseEntity *CWeaponScanvisor::FindPickerEntity(CBasePlayer *pPlayer)
-//{
-//
-//}
 
 CWeaponScanvisor::CWeaponScanvisor()
 {
@@ -74,12 +74,14 @@ void CWeaponScanvisor::PrimaryAttack()
 
 	if (m_bIsCurrentlyScanning)
 	{	
-		AcquireTarget(m_pTarget);
+		AcquireTarget();
 		
 		if (m_pTarget)
 		{
+			LockOnTarget(m_pTarget);
 			Msg(m_pTarget->GetClassname());
-			UTIL_PointAtEntity(m_pPlayer, m_pTarget);
+			//UTIL_PointAtEntity(m_pPlayer, m_pTarget);
+			
 			/*m_pPlayer->calc*/
 		}
 
@@ -98,7 +100,7 @@ void CWeaponScanvisor::PrimaryAttack()
 // Purpose: Fires a trace forward to check if there is an object in 
 //			front of the player.
 //-----------------------------------------------------------------------------
-void CWeaponScanvisor::AcquireTarget(CBaseEntity *ent)
+void CWeaponScanvisor::AcquireTarget()
 {
 	trace_t result;
 	Vector vecForward, vecStart, vecEnd;
@@ -107,11 +109,28 @@ void CWeaponScanvisor::AcquireTarget(CBaseEntity *ent)
 	vecEnd = vecStart + (vecForward * SCAN_RANGE_NORMAL); //do traces with bigger range and check distances in primaryattack
 	UTIL_TraceLine(vecStart, vecEnd, MASK_ALL, this, COLLISION_GROUP_NONE, &result);
 
-	if (result.m_pEnt)
+	if (result.m_pEnt && result.DidHitNonWorldEntity())
 	{
 		//we've got a target!
 		m_pTarget = result.m_pEnt;
 	}
+	else
+	{
+		//invalidate target
+		m_pTarget = nullptr;
+	}
+}
+
+void CWeaponScanvisor::LockOnTarget(CBaseEntity *pEnt)
+{
+	//compute vector between player and target
+	Vector playerToTarget;
+	VectorSubtract(pEnt->GetAbsOrigin(), m_pPlayer->EyePosition(), playerToTarget);
+
+	QAngle viewAngles;
+	VectorAngles(playerToTarget, viewAngles);
+	
+	m_pPlayer->SnapEyeAngles(viewAngles);
 }
 
 void CWeaponScanvisor::ItemPreFrame()
