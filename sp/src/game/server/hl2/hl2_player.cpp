@@ -1058,7 +1058,6 @@ void CHL2_Player::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 		ucmd->buttons &= ~IN_USE;
 	}
 
-
 	// Can't use stuff while dead
 	if ( IsDead() )
 	{
