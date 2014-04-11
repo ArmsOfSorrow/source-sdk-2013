@@ -1,61 +1,7 @@
-//==================================================//
-// Author: ArmsOfSorrow
-// Purpose: A weapon to mimic Metroid Prime's scanning 
-//			mechanic
-//==================================================//
-
 #include "cbase.h"
-#include "basehlcombatweapon.h"
-#include "basecombatweapon_shared.h"
-#include "basecombatcharacter.h"
-#include "in_buttons.h"
-#include "playerlocaldata.h"
-#include "util.h"
+#include "weapon_scanvisor.h"
 
 
-//#include "VGuiMatSurface/IMatSystemSurface.h"
-//#include <vgui_controls/Controls.h>
-
-
-
-#include "memdbgon.h"
-
-#define SCAN_TIME_NORMAL 3.0f
-#define SCAN_RANGE_NORMAL 512 //test range, might change during balancing (if I ever come that far)
-
-class CWeaponScanvisor : public CBaseHLCombatWeapon
-{
-	DECLARE_CLASS(CWeaponScanvisor, CBaseHLCombatWeapon);
-
-public:
-	CWeaponScanvisor();
-	void PrimaryAttack();
-	void ItemPreFrame();
-	void DryFire();
-
-	DECLARE_SERVERCLASS();
-	DECLARE_DATADESC();
-
-private:
-	float m_flScanTime;
-	int m_nOldButtonState;
-	bool m_bIsCurrentlyScanning;
-	CBasePlayer *m_pPlayer;
-	CBaseEntity *m_pTarget; //this should be an own type, to vary scanning times
-	
-	void AcquireTarget();
-	void LockOnTarget(CBaseEntity *pEnt);
-};
-
-LINK_ENTITY_TO_CLASS(weapon_scanvisor, CWeaponScanvisor);
-
-PRECACHE_WEAPON_REGISTER(weapon_scanvisor);
-
-IMPLEMENT_SERVERCLASS_ST(CWeaponScanvisor, DT_WeaponScanvisor)
-END_SEND_TABLE();
-
-BEGIN_DATADESC(CWeaponScanvisor)
-END_DATADESC()
 
 CWeaponScanvisor::CWeaponScanvisor()
 {
@@ -141,7 +87,7 @@ void CWeaponScanvisor::ItemPreFrame()
 		if (m_pPlayer->m_nButtons & IN_ATTACK && m_nOldButtonState & IN_ATTACK)
 		{
 			//we're still scanning, update scan time in primary attack
-			m_bIsCurrentlyScanning = true;
+			m_bIsCurrentlyScanning = true; //FIXME: set isCurrentlyScanning only if we actually have a target
 			m_flScanTime += gpGlobals->frametime;
 			Msg("m_flScanTime: %f \n", m_flScanTime);
 		}
@@ -164,3 +110,19 @@ void CWeaponScanvisor::ItemPreFrame()
 
 	BaseClass::ItemPreFrame();
 }
+
+int CWeaponScanvisor::UpdateTransmitState()
+{
+	return SetTransmitState(FL_EDICT_ALWAYS);
+}
+
+LINK_ENTITY_TO_CLASS(weapon_scanvisor, CWeaponScanvisor);
+
+PRECACHE_WEAPON_REGISTER(weapon_scanvisor);
+
+IMPLEMENT_SERVERCLASS_ST(CWeaponScanvisor, DT_WeaponScanvisor)
+SendPropBool(SENDINFO(m_bIsCurrentlyScanning))
+END_SEND_TABLE();
+
+BEGIN_DATADESC(CWeaponScanvisor)
+END_DATADESC()

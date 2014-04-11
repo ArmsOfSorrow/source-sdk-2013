@@ -121,6 +121,8 @@ void CPlayerMove::CheckMovingGround( CBasePlayer *player, double frametime )
 	player->RemoveFlag( FL_BASEVELOCITY );
 }
 
+#include "weapon_scanvisor.h"
+
 //-----------------------------------------------------------------------------
 // Purpose: Prepares for running movement
 // Input  : *player - 
@@ -169,6 +171,14 @@ void CPlayerMove::SetupMove( CBasePlayer *player, CUserCmd *ucmd, IMoveHelper *p
 	}
 	else
 	{
+		if (player->GetActiveWeapon() && dynamic_cast<CWeaponScanvisor*>(player->GetActiveWeapon())->m_bIsCurrentlyScanning)
+		{
+
+			//zero out mouse deltas when scanning
+			ucmd->mousedx = 0;
+			ucmd->mousedy = 0;
+		}
+
 		move->m_flForwardMove		= ucmd->forwardmove;
 		move->m_flSideMove			= ucmd->sidemove;
 		move->m_flUpMove				= ucmd->upmove;

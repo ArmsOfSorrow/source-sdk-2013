@@ -73,3 +73,10 @@ sp/game/mod_hl2/modelsounds.cache
 sp/game/mod_hl2/sound/sound.cache
 sp/game/mod_hl2/voice_ban.dt
 *.ain
+sp/game/mod_hl2/cfg/server_blacklist.txt
+*.bsp
+*.prt
+*.vmx
+sp/game/mod_hl2/cfg/autoexec.cfg
+sp/game/mod_hl2/cfg/server_blacklist.txt
+*.lib
