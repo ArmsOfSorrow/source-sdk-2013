@@ -29,6 +29,7 @@
 #include "cam_thirdperson.h"
 #include "inputsystem/iinputsystem.h"
 #include "const.h"
+#include "c_weapon_scanvisor.h"
 
 #if defined( _X360 )
 #include "xbox/xbox_win32stubs.h"
@@ -444,7 +445,7 @@ void CInput::ScaleMouse( float *x, float *y )
 	}
 }
 
-#include "c_weapon_scanvisor.h"
+
 
 //-----------------------------------------------------------------------------
 // Purpose: ApplyMouse -- applies mouse deltas to CUserCmd

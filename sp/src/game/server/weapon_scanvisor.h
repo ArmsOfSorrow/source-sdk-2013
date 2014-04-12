@@ -4,7 +4,8 @@
 //			mechanic
 //==================================================//
 
-
+#pragma once
+#include "cbase.h"
 #include "basehlcombatweapon.h"
 #include "basecombatweapon_shared.h"
 #include "basecombatcharacter.h"
@@ -13,6 +14,7 @@
 #include "util.h"
 #include "usercmd.h"
 #include "const.h"
+
 
 #define SCAN_TIME_NORMAL 3.0f
 #define SCAN_RANGE_NORMAL 512 //test range, might change during balancing (if I ever come that far)

@@ -767,7 +767,7 @@ void CInput::AdjustAngles ( float frametime )
 {
 	float	speed;
 	QAngle viewangles;
-	
+
 	// Determine control scaling factor ( multiplies time )
 	speed = DetermineKeySpeed( frametime );
 	if ( speed <= 0.0f )
