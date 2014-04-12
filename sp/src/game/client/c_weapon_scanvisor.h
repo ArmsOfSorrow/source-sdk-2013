@@ -2,6 +2,7 @@
 #include "c_basehlcombatweapon.h"
 #include "c_weapon__stubs.h"
 
+#pragma once
 
 class C_WeaponScanvisor : public C_BaseHLCombatWeapon
 {

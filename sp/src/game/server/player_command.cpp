@@ -171,7 +171,10 @@ void CPlayerMove::SetupMove( CBasePlayer *player, CUserCmd *ucmd, IMoveHelper *p
 	}
 	else
 	{
-		if (player->GetActiveWeapon() && dynamic_cast<CWeaponScanvisor*>(player->GetActiveWeapon())->m_bIsCurrentlyScanning)
+		CBaseCombatWeapon *pWeapon = player->GetActiveWeapon();
+		CWeaponScanvisor *pScanvisor = dynamic_cast<CWeaponScanvisor*>(pWeapon);
+
+		if (pScanvisor && pScanvisor->m_bIsCurrentlyScanning)
 		{
 
 			//zero out mouse deltas when scanning
