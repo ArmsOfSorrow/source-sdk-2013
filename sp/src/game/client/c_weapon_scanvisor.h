@@ -14,11 +14,13 @@ public:
 	//void ClientThink();
 
 	bool m_bIsCurrentlyScanning;
+	EHANDLE m_hTarget;
 	//client think for updating convar
 };
 
 STUB_WEAPON_CLASS_IMPLEMENT(weapon_scanvisor, C_WeaponScanvisor);
 
 IMPLEMENT_CLIENTCLASS_DT(C_WeaponScanvisor, DT_WeaponScanvisor, CWeaponScanvisor)
-RecvPropBool(RECVINFO(m_bIsCurrentlyScanning))
+RecvPropBool(RECVINFO(m_bIsCurrentlyScanning)),
+RecvPropEHandle(RECVINFO(m_hTarget))
 END_RECV_TABLE()

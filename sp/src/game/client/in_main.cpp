@@ -1119,7 +1119,7 @@ void CInput::CreateMove ( int sequence_number, float input_sample_frametime, boo
 	if ( active || sv_noclipduringpause.GetInt() )
 	{
 		// Determine view angles
-		AdjustAngles ( input_sample_frametime );
+		AdjustAngles ( input_sample_frametime );		//maybe don't adjust angles when scanning?
 
 		// Determine sideways movement
 		ComputeSideMove( cmd );

@@ -26,9 +26,6 @@ void CWeaponScanvisor::PrimaryAttack()
 		{
 			LockOnTarget(m_pTarget);
 			Msg(m_pTarget->GetClassname());
-			//UTIL_PointAtEntity(m_pPlayer, m_pTarget);
-			
-			/*m_pPlayer->calc*/
 		}
 
 	
@@ -39,7 +36,6 @@ void CWeaponScanvisor::PrimaryAttack()
 			Msg("scan completed. entity info not implemented yet.");
 		}
 	}
-	//BaseClass::PrimaryAttack();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,11 +55,13 @@ void CWeaponScanvisor::AcquireTarget()
 	{
 		//we've got a target!
 		m_pTarget = result.m_pEnt;
+		m_hTarget = m_pTarget->GetRefEHandle();
 	}
 	else
 	{
 		//invalidate target
 		m_pTarget = nullptr;
+		m_hTarget = nullptr;
 	}
 }
 
@@ -77,6 +75,7 @@ void CWeaponScanvisor::LockOnTarget(CBaseEntity *pEnt)
 	VectorAngles(playerToTarget, viewAngles);
 	
 	m_pPlayer->SnapEyeAngles(viewAngles);
+	//UpdateClientData(m_pPlayer);
 }
 
 void CWeaponScanvisor::ItemPreFrame()
@@ -101,6 +100,7 @@ void CWeaponScanvisor::ItemPreFrame()
 		{
 			//we're not scanning
 			m_pTarget = nullptr;
+			m_hTarget = nullptr;
 			m_flScanTime = 0;
 			m_bIsCurrentlyScanning = false;
 		}
@@ -121,7 +121,8 @@ LINK_ENTITY_TO_CLASS(weapon_scanvisor, CWeaponScanvisor);
 PRECACHE_WEAPON_REGISTER(weapon_scanvisor);
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponScanvisor, DT_WeaponScanvisor)
-SendPropBool(SENDINFO(m_bIsCurrentlyScanning))
+SendPropBool(SENDINFO(m_bIsCurrentlyScanning)),
+SendPropEHandle(SENDINFO(m_hTarget))
 END_SEND_TABLE();
 
 BEGIN_DATADESC(CWeaponScanvisor)

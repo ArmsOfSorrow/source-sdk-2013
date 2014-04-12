@@ -206,6 +206,7 @@ public:
 	virtual void		Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo &info );
 
 	virtual void		GetAutoaimVector( autoaim_params_t &params );
+	//virtual void		LockOnTarget();
 	bool				ShouldKeepLockedAutoaimTarget( EHANDLE hLockedTarget );
 
 	void				SetLocatorTargetEntity( CBaseEntity *pEntity ) { m_hLocatorTargetEntity.Set( pEntity ); }

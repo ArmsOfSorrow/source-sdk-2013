@@ -455,7 +455,7 @@ void CInput::ScaleMouse( float *x, float *y )
 //-----------------------------------------------------------------------------
 void CInput::ApplyMouse( QAngle& viewangles, CUserCmd *cmd, float mouse_x, float mouse_y )
 {
-	//don't apply mouse if the player is scanning
+	//don't apply mouse if the player is scanning AND has a target (FIXME)
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 	if (pPlayer)
 	{

@@ -46,6 +46,7 @@
 #include "gamestats.h"
 #include "filters.h"
 #include "tier0/icommandline.h"
+#include "weapon_scanvisor.h"
 
 #ifdef HL2_EPISODIC
 #include "npc_alyx_episodic.h"
@@ -2492,6 +2493,41 @@ void CHL2_Player::NotifyScriptsOfDeath( void )
 		pEnt = gEntList.FindEntityByClassname( pEnt, "logic_choreographed_scene" );
 	}
 }
+
+//void CHL2_Player::LockOnTarget()
+//{
+//	//check if the player has the scan visor equipped
+//	CBaseCombatWeapon *pWeapon = GetActiveWeapon();
+//	CWeaponScanvisor *pScanvisor = dynamic_cast<CWeaponScanvisor*>(pWeapon);
+//
+//	//check if he's currently scanning
+//	if (pScanvisor && pScanvisor->m_bIsCurrentlyScanning)
+//	{
+//		//set the m_hLockedAutoAimEntity handle (network var in weapon_scanvisor.h)
+//		//this is called first, so it's better to do the whole aiming stuff
+//		//in the player class...
+//		
+//		trace_t result;
+//		Vector vecForward, vecStart, vecEnd;
+//		AngleVectors(EyeAngles(), &vecForward);
+//		vecStart = EyePosition();
+//		vecEnd = vecStart + (vecForward * SCAN_RANGE_NORMAL); //do traces with bigger range and check distances in primaryattack
+//		UTIL_TraceLine(vecStart, vecEnd, MASK_ALL, this, COLLISION_GROUP_NONE, &result);
+//
+//		if (result.m_pEnt && result.DidHitNonWorldEntity())
+//		{
+//			//snap view to target entity
+//			Vector playerToTarget;
+//			VectorSubtract(result.m_pEnt->GetAbsOrigin(), EyePosition(), playerToTarget);
+//
+//			QAngle viewAngles;
+//			VectorAngles(playerToTarget, viewAngles);
+//
+//			SnapEyeAngles(viewAngles);
+//		}
+//		
+//	}
+//}
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------

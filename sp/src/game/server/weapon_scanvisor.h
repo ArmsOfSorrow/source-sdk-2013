@@ -29,6 +29,7 @@ public:
 	int UpdateTransmitState();
 
 	CNetworkVar(bool, m_bIsCurrentlyScanning);
+	CNetworkVar(EHANDLE, m_hTarget);
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
