@@ -28,15 +28,12 @@ public:
 	void PrimaryAttack();
 	void ItemPreFrame();
 	void DryFire();
-	int UpdateTransmitState();
-
-	CNetworkVar(bool, m_bIsCurrentlyScanning);
-	CNetworkVar(EHANDLE, m_hTarget);
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 private:
+	bool m_bIsCurrentlyScanning;
 	float m_flScanTime;
 	int m_nOldButtonState;
 
@@ -44,6 +41,5 @@ private:
 	CBaseEntity *m_pTarget; //this should be an own type, to vary scanning times
 
 	void AcquireTarget();
-	void LockOnTarget(CBaseEntity *pEnt);
 };
 

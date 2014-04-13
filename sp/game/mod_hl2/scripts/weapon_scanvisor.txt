@@ -4,8 +4,8 @@ WeaponData
 {
 	
 	"printname" 			"#mod_scanvisor"
-	"viewmodel"				"models/weapons/v_crowbar.mdl"
-	"playermodel"			"models/weapons/w_crowbar.mdl"
+	"viewmodel"				"models/weapons/v_stunbaton.mdl"
+	"playermodel"			"models/weapons/w_stunbaton.mdl"
 	"anim_prefix"			"crowbar"
 	"bucket"				"0"
 	"bucket_position"		"2"

@@ -16,16 +16,15 @@ CWeaponScanvisor::CWeaponScanvisor()
 
 void CWeaponScanvisor::PrimaryAttack()
 {
-	//two possibilities. either we were scanning last frame or not. if we were, continue and check if we're done.
-	//if we were not, reset the scan time.
-
 	if (m_bIsCurrentlyScanning)
 	{	
 		AcquireTarget();
 		
 		if (m_pTarget)
 		{
-			LockOnTarget(m_pTarget);
+			m_flScanTime += gpGlobals->frametime;
+			m_pPlayer->SetScannedEntity(m_pTarget);
+			Msg("m_flScanTime: %f \n", m_flScanTime);
 			Msg(m_pTarget->GetClassname());
 		}
 
@@ -56,27 +55,12 @@ void CWeaponScanvisor::AcquireTarget()
 	{
 		//we've got a target!
 		m_pTarget = result.m_pEnt;
-		//m_hTarget = m_pTarget->GetRefEHandle();
 	}
 	else
 	{
 		//invalidate target
 		m_pTarget = nullptr;
-		//m_hTarget = nullptr;
 	}
-}
-
-void CWeaponScanvisor::LockOnTarget(CBaseEntity *pEnt)
-{
-	//compute vector between player and target
-	/*Vector playerToTarget;
-	VectorSubtract(pEnt->GetAbsOrigin(), m_pPlayer->EyePosition(), playerToTarget);
-
-	QAngle viewAngles;
-	VectorAngles(playerToTarget, viewAngles);
-	
-	m_pPlayer->SnapEyeAngles(viewAngles);*/
-	m_pPlayer->SetScannedEntity(pEnt);
 }
 
 void CWeaponScanvisor::ItemPreFrame()
@@ -87,13 +71,11 @@ void CWeaponScanvisor::ItemPreFrame()
 		if (m_pPlayer->m_nButtons & IN_ATTACK && m_nOldButtonState & IN_ATTACK)
 		{
 			//we're still scanning, update scan time in primary attack
-			m_bIsCurrentlyScanning = true; //FIXME: set isCurrentlyScanning only if we actually have a target
-			m_flScanTime += gpGlobals->frametime;
-			Msg("m_flScanTime: %f \n", m_flScanTime);
+			m_bIsCurrentlyScanning = true;
 		}
 		else if (m_pPlayer->m_nButtons & IN_ATTACK)
 		{
-			//we're starting a scan...wait, isn't this the same as above? nope. scan time needs a reset
+			//we're starting a new scan...
 			m_flScanTime = 0;
 			m_bIsCurrentlyScanning = true;
 		}
@@ -102,7 +84,6 @@ void CWeaponScanvisor::ItemPreFrame()
 			//we're not scanning
 			m_pTarget = nullptr;
 			m_pPlayer->SetScannedEntity(NULL);
-			//m_hTarget = nullptr;
 			m_flScanTime = 0;
 			m_bIsCurrentlyScanning = false;
 		}
@@ -113,19 +94,12 @@ void CWeaponScanvisor::ItemPreFrame()
 	BaseClass::ItemPreFrame();
 }
 
-int CWeaponScanvisor::UpdateTransmitState()
-{
-	return SetTransmitState(FL_EDICT_ALWAYS);
-}
-
 LINK_ENTITY_TO_CLASS(weapon_scanvisor, CWeaponScanvisor);
 
 PRECACHE_WEAPON_REGISTER(weapon_scanvisor);
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponScanvisor, DT_WeaponScanvisor)
-SendPropBool(SENDINFO(m_bIsCurrentlyScanning)),
-//SendPropEHandle(SENDINFO(m_hTarget))
-END_SEND_TABLE();
+END_SEND_TABLE()
 
 BEGIN_DATADESC(CWeaponScanvisor)
 END_DATADESC()

@@ -29,7 +29,6 @@
 #include "cam_thirdperson.h"
 #include "inputsystem/iinputsystem.h"
 #include "const.h"
-#include "c_weapon_scanvisor.h"
 
 #if defined( _X360 )
 #include "xbox/xbox_win32stubs.h"
@@ -456,17 +455,6 @@ void CInput::ScaleMouse( float *x, float *y )
 //-----------------------------------------------------------------------------
 void CInput::ApplyMouse( QAngle& viewangles, CUserCmd *cmd, float mouse_x, float mouse_y )
 {
-	//don't apply mouse if the player is scanning AND has a target (FIXME)
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	if (pPlayer)
-	{
-		C_BaseCombatWeapon *pWeapon = pPlayer->GetActiveWeapon();
-		C_WeaponScanvisor *pScanvisor = dynamic_cast<C_WeaponScanvisor*>(pWeapon);
-		if (pScanvisor && pScanvisor->m_bIsCurrentlyScanning)
-		{
-			return; //this will surely cause a fuck-up somewhere in the code
-		}
-	}
 
 	if ( !((in_strafe.state & 1) || lookstrafe.GetInt()) )
 	{
