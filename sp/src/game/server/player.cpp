@@ -3645,6 +3645,13 @@ void CBasePlayer::PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper)
 		VectorCopy ( ucmd->viewangles, pl.v_angle );
 	}
 
+	// player movement is set up here, so it's worth a try.
+	if (GetScannedEntity() != NULL)
+	{
+		CenterViewOnEntity(pl.v_angle);
+		pl.fixangle = FIXANGLE_ABSOLUTE;
+	}
+
 	// Handle FL_FROZEN.
 	// Prevent player moving for some seconds after New Game, so that they pick up everything
 	if( GetFlags() & FL_FROZEN || 
@@ -7986,6 +7993,7 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 		SendPropEHandle	(SENDINFO(m_hZoomOwner) ),
 		SendPropArray	( SendPropEHandle( SENDINFO_ARRAY( m_hViewModel ) ), m_hViewModel ),
 		SendPropString	(SENDINFO(m_szLastPlaceName) ),
+		SendPropEHandle(SENDINFO(m_hScannedEntity)),
 
 #if defined USES_ECON_ITEMS
 		SendPropUtlVector( SENDINFO_UTLVECTOR( m_hMyWearables ), MAX_WEARABLES_SENT_FROM_SERVER, SendPropEHandle( NULL, 0 ) ),

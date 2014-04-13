@@ -1580,6 +1580,21 @@ void CBasePlayer::CalcViewModelView( const Vector& eyeOrigin, const QAngle& eyeA
 	}
 }
 
+//used for scanning...probably the wrong place for doing this
+void CBasePlayer::CenterViewOnEntity(QAngle &eyeAngles)
+{
+	if (m_hScannedEntity.Get())
+	{
+		//compute vector between player and entity
+		Vector vecPlayerToEnt;
+		VectorSubtract(m_hScannedEntity->GetAbsOrigin(), EyePosition(), vecPlayerToEnt);
+
+		QAngle viewAngles;
+		VectorAngles(vecPlayerToEnt, viewAngles);
+		VectorCopy(viewAngles, eyeAngles);
+	}
+}
+
 void CBasePlayer::CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov )
 {
 #if defined( CLIENT_DLL )
@@ -1601,7 +1616,14 @@ void CBasePlayer::CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& f
 		VectorCopy( EyeAngles(), eyeAngles );
 	}
 #else
-	VectorCopy( EyeAngles(), eyeAngles );
+	
+	
+		VectorCopy(EyeAngles(), eyeAngles);
+
+		if (m_hScannedEntity != NULL)
+		{
+			CenterViewOnEntity(eyeAngles);
+		}
 #endif
 
 #if defined( CLIENT_DLL )

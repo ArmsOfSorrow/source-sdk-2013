@@ -163,6 +163,8 @@ public:
 	virtual const QAngle &EyeAngles();		// Direction of eyes
 	void				 EyePositionAndVectors( Vector *pPosition, Vector *pForward, Vector *pRight, Vector *pUp );
 	virtual const QAngle &LocalEyeAngles();		// Direction of eyes
+
+	void CenterViewOnEntity(QAngle &eyeAngles);
 	
 	// This can be overridden to return something other than m_pRagdoll if the mod uses separate 
 	// entities for ragdolls.
@@ -492,6 +494,8 @@ private:
 	// Make sure no one calls this...
 	C_BasePlayer& operator=( const C_BasePlayer& src );
 	C_BasePlayer( const C_BasePlayer & ); // not defined, not accessible
+
+	EHANDLE m_hScannedEntity; //entity to center view on if scanned
 
 	// Vehicle stuff.
 	EHANDLE			m_hVehicle;

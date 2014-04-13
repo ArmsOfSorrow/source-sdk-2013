@@ -341,6 +341,8 @@ public:
 	void					EyeVectors( Vector *pForward, Vector *pRight = NULL, Vector *pUp = NULL );
 	void					CacheVehicleView( void );	// Calculate and cache the position of the player in the vehicle
 
+	void					CenterViewOnEntity(QAngle &eyeAngles);
+
 	// Sets the view angles
 	void					SnapEyeAngles( const QAngle &viewAngles );
 
@@ -707,6 +709,8 @@ public:
 	void	SetMuzzleFlashTime( float flTime );
 	void	SetUseEntity( CBaseEntity *pUseEntity );
 	CBaseEntity *GetUseEntity();
+	void	SetScannedEntity( CBaseEntity *pScannedEntity );
+	CBaseEntity *GetScannedEntity();
 
 	virtual float GetPlayerMaxSpeed();
 
@@ -915,6 +919,7 @@ protected:
 	Vector					m_vecCameraPVSOrigin;
 
 	CNetworkHandle( CBaseEntity, m_hUseEntity );			// the player is currently controlling this entity because of +USE latched, NULL if no entity
+	CNetworkHandle(CBaseEntity, m_hScannedEntity);
 
 	int						m_iTrain;				// Train control position
 
@@ -1116,6 +1121,7 @@ private:
 	bool					m_bPlayerUnderwater;
 
 	EHANDLE					m_hViewEntity;
+	
 
 	// Movement constraints
 	CNetworkHandle( CBaseEntity, m_hConstraintEntity );
@@ -1268,6 +1274,17 @@ inline void CBasePlayer::SetUseEntity( CBaseEntity *pUseEntity )
 inline CBaseEntity *CBasePlayer::GetUseEntity() 
 { 
 	return m_hUseEntity;
+}
+
+//scanning accessors...are they even needed?
+inline void CBasePlayer::SetScannedEntity(CBaseEntity *pScannedEntity)
+{
+	m_hScannedEntity = pScannedEntity;
+}
+
+inline CBaseEntity *CBasePlayer::GetScannedEntity()
+{
+	return m_hScannedEntity;
 }
 
 // Bot accessors...

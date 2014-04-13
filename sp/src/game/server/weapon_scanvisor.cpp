@@ -1,5 +1,6 @@
 #include "cbase.h"
 #include "weapon_scanvisor.h"
+#include "player.h"
 
 
 
@@ -55,27 +56,27 @@ void CWeaponScanvisor::AcquireTarget()
 	{
 		//we've got a target!
 		m_pTarget = result.m_pEnt;
-		m_hTarget = m_pTarget->GetRefEHandle();
+		//m_hTarget = m_pTarget->GetRefEHandle();
 	}
 	else
 	{
 		//invalidate target
 		m_pTarget = nullptr;
-		m_hTarget = nullptr;
+		//m_hTarget = nullptr;
 	}
 }
 
 void CWeaponScanvisor::LockOnTarget(CBaseEntity *pEnt)
 {
 	//compute vector between player and target
-	Vector playerToTarget;
+	/*Vector playerToTarget;
 	VectorSubtract(pEnt->GetAbsOrigin(), m_pPlayer->EyePosition(), playerToTarget);
 
 	QAngle viewAngles;
 	VectorAngles(playerToTarget, viewAngles);
 	
-	m_pPlayer->SnapEyeAngles(viewAngles);
-	//UpdateClientData(m_pPlayer);
+	m_pPlayer->SnapEyeAngles(viewAngles);*/
+	m_pPlayer->SetScannedEntity(pEnt);
 }
 
 void CWeaponScanvisor::ItemPreFrame()
@@ -100,7 +101,8 @@ void CWeaponScanvisor::ItemPreFrame()
 		{
 			//we're not scanning
 			m_pTarget = nullptr;
-			m_hTarget = nullptr;
+			m_pPlayer->SetScannedEntity(NULL);
+			//m_hTarget = nullptr;
 			m_flScanTime = 0;
 			m_bIsCurrentlyScanning = false;
 		}
@@ -122,7 +124,7 @@ PRECACHE_WEAPON_REGISTER(weapon_scanvisor);
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponScanvisor, DT_WeaponScanvisor)
 SendPropBool(SENDINFO(m_bIsCurrentlyScanning)),
-SendPropEHandle(SENDINFO(m_hTarget))
+//SendPropEHandle(SENDINFO(m_hTarget))
 END_SEND_TABLE();
 
 BEGIN_DATADESC(CWeaponScanvisor)

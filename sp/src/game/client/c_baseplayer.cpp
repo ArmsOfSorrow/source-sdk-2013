@@ -285,6 +285,8 @@ END_RECV_TABLE()
 		RecvPropFloat	(RECVINFO(m_flMaxspeed)),
 		RecvPropInt		(RECVINFO(m_fFlags)),
 
+		RecvPropEHandle	(RECVINFO(m_hScannedEntity)),
+
 
 		RecvPropInt		(RECVINFO(m_iObserverMode), 0, RecvProxy_ObserverMode ),
 		RecvPropEHandle	(RECVINFO(m_hObserverTarget), RecvProxy_ObserverTarget ),
