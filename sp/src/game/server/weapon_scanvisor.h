@@ -38,7 +38,7 @@ private:
 	int m_nOldButtonState;
 
 	CBasePlayer *m_pPlayer;
-	CBaseEntity *m_pTarget; //this should be an own type, to vary scanning times
+	CBaseEntity *m_pTarget; //this should be an own type derived from CModelEntity
 
 	void AcquireTarget();
 };

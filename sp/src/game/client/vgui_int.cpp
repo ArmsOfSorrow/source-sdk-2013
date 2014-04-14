@@ -14,6 +14,7 @@
 #include "imessagechars.h"
 #include "inetgraphpanel.h"
 #include "idebugoverlaypanel.h"
+#include "iscaninfopanel.h"
 #include <vgui/ISurface.h>
 #include <vgui/IVGui.h>
 #include <vgui/IInput.h>
@@ -220,6 +221,9 @@ void VGui_CreateGlobalPanels( void )
 #ifdef SIXENSE
 	g_pSixenseInput->CreateGUI( gameToolParent );
 #endif
+
+	VPANEL ingameParent = enginevgui->GetPanel(PANEL_INGAMESCREENS);
+	sp->Create(ingameParent);
 }
 
 void VGui_Shutdown()
@@ -240,6 +244,8 @@ void VGui_Shutdown()
 	messagechars->Destroy();
 	loadingdisc->Destroy();
 	internalCenterPrint->Destroy();
+
+	sp->Destroy();
 
 	if ( g_pClientMode )
 	{
