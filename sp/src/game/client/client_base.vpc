@@ -173,6 +173,11 @@ $Project
 		
 	$Folder	"Source Files"
 	{
+		$Folder "ltp source files"
+		{
+			$File "vgui_scaninfopanel.cpp"
+		}
+	
 		$File	"hl2\C_Func_Monitor.cpp"
 		$File	"geiger.cpp"
 		$File	"history_resource.cpp"
@@ -676,6 +681,11 @@ $Project
 
 	$Folder	"Header Files"
 	{
+		$Folder "ltp header files"
+		{
+			$File "iscaninfopanel.h"
+		}
+	
 		$File	"animationlayer.h"
 		$File	"baseanimatedtextureproxy.h"
 		$File	"baseclientrendertargets.h"
