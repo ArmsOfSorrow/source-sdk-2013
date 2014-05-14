@@ -7,13 +7,6 @@
 #pragma once
 #include "cbase.h"
 #include "basehlcombatweapon.h"
-#include "basecombatweapon_shared.h"
-#include "basecombatcharacter.h"
-#include "in_buttons.h"
-#include "playerlocaldata.h"
-#include "util.h"
-#include "usercmd.h"
-#include "const.h"
 
 
 #define SCAN_TIME_NORMAL 3.0f

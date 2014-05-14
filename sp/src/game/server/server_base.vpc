@@ -82,6 +82,7 @@ $Project
 		$Folder "ltp source files"
 		{
 			$File	"weapon_scanvisor.cpp"
+			$File	"func_scan.cpp"
 		}
 		
 		$File	"$SRCDIR\game\shared\achievement_saverestore.cpp"
@@ -794,6 +795,7 @@ $Project
 		$Folder "ltp header files"
 		{
 			$File	"weapon_scanvisor.h"
+			$File	"func_scan.h"
 		}
 		
 		$File	"$SRCDIR\public\mathlib\amd3dx.h"

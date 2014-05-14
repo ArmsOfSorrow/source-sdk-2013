@@ -1,0 +1,22 @@
+//==================================================================
+//Author: 	ArmsOfSorrow
+//Purpose: 	ltp entity definitions for hammer
+//Date: 	25.04.2014
+//==================================================================
+
+@include "base.fgd"
+
+@BaseClass base(Targetname) = Scannable
+[
+	scaninfotoken(string) : "Scan Info" : "" : "The text you want to display when the entity has been successfully scanned."
+	
+	//Inputs
+	input ShowScanDetails(void) : "Causes this entity to show the scan info associated with it."
+	//who holds the scanning state? scanvisor or the scanned entity? hmm...
+	//i could call output events from scanvisor, actually, but that'd be a bit messy.
+	
+	//Outputs
+	output OnScanStarted(void) : "Fired what the player started scanning this entity."
+	output OnScanAborted(void) : "Fired when the player stops scanning before it is completed."
+	output OnScanCompleted(void) : "Fired when this entity has been successfully scanned."
+]

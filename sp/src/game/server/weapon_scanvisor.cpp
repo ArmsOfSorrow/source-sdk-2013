@@ -1,6 +1,7 @@
 #include "cbase.h"
 #include "weapon_scanvisor.h"
 #include "player.h"
+#include "in_buttons.h"
 
 
 
@@ -34,6 +35,8 @@ void CWeaponScanvisor::PrimaryAttack()
 			//pause and display stuff in vgui (in the future)
 			//for now, spam messages to the console
 			Msg("scan completed. entity info not implemented yet.");
+
+			//call showscaninfo here. some pause state would be needed, though.
 		}
 	}
 }

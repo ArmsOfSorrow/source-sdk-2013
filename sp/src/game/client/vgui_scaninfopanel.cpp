@@ -1,28 +1,14 @@
-//#include "cbase.h"
-//#include "iscaninfopanel.h"
-//#include <vgui_controls\Panel.h>
-//#include <vgui\IVGui.h>
-//#include "VGuiMatSurface/IMatSystemSurface.h"
-//#include <vgui_controls/Controls.h>
-//#include <vgui/ISurface.h>
-//#include <vgui/IScheme.h>
-//#include <vgui/IPanel.h>
-
 #include "cbase.h"
-#include "ifpspanel.h"
-#include <vgui_controls/Panel.h>
-#include "view.h"
-#include <vgui/IVGui.h>
+#include "iscaninfopanel.h"
+#include <vgui_controls\Panel.h>
+#include <vgui\IVGui.h>
 #include "VGuiMatSurface/IMatSystemSurface.h"
 #include <vgui_controls/Controls.h>
 #include <vgui/ISurface.h>
 #include <vgui/IScheme.h>
 #include <vgui/IPanel.h>
-#include "materialsystem/imaterialsystemhardwareconfig.h"
-#include "filesystem.h"
-#include "../common/xbox/xboxstubs.h"
-#include "steam/steam_api.h"
-#include "iscaninfopanel.h"
+
+static ConVar cl_ltp_showscaninfopanel("cl_ltp_showscaninfopanel", "1", 0, "Draw scaninfopanel. Just for testing purposes...");
 
 class CScanInfoPanel : public vgui::Panel
 {
@@ -34,18 +20,22 @@ public:
 
 	virtual void OnTick();
 	virtual void OnCommand(const char *pszCommand);
+	//virtual bool ShouldDraw();
 };
 
 CScanInfoPanel::CScanInfoPanel(vgui::VPANEL parent) : BaseClass(NULL, "ScanInfoPanel")
 {
+	int w, h;
+	vgui::surface()->GetScreenSize(w, h);
+	SetSize(w, h);
 	SetParent(parent);
 	SetKeyBoardInputEnabled(true);
 	SetMouseInputEnabled(true);
-	SetProportional(false);
 	SetScheme(vgui::scheme()->LoadSchemeFromFile("resource/SourceScheme.res", "SourceScheme"));
+	SetEnabled(true);
 
 	vgui::ivgui()->AddTickSignal(GetVPanel(), 250);
-	DevMsg("scaninfopanel has been constructed.");
+	DevMsg("scaninfopanel has been constructed.\n");
 }
 
 CScanInfoPanel::~CScanInfoPanel()
