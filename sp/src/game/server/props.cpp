@@ -6129,3 +6129,18 @@ static ConCommand ent_rotate("ent_rotate", CC_Ent_Rotate, "Rotates an entity by 
 
 // This is a dummy. The entity is entirely clientside.
 LINK_ENTITY_TO_CLASS( func_proprrespawnzone, CBaseEntity );
+
+CScannableDynamicProp::CScannableDynamicProp()
+{
+}
+
+CScannableDynamicProp::~CScannableDynamicProp()
+{
+}
+
+void CScannableDynamicProp::Spawn()
+{
+	BaseClass::Spawn();
+}
+
+LINK_ENTITY_TO_CLASS(prop_dynamic_scannable, CScannableDynamicProp);

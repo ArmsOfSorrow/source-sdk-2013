@@ -33,6 +33,7 @@ private:
 
 	CBasePlayer *m_pPlayer;
 	CScannable *m_pTarget;
+	//CBaseEntity *m_pTarget;
 
 	void AcquireTarget();
 };

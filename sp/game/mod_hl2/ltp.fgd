@@ -8,15 +8,21 @@
 
 @BaseClass base(Targetname) = Scannable
 [
-	scaninfotoken(string) : "Scan Info" : "" : "The text you want to display when the entity has been successfully scanned."
+	scaninfo(string) : "Scan Info" : "" : "The text you want to display when the entity has been successfully scanned."
+	scantime(float) : "Scanning Time" : "5.0" : "The time in seconds it should take to scan this entity."
 	
 	//Inputs
-	input ShowScanDetails(void) : "Causes this entity to show the scan info associated with it."
+	input ShowScanInfo(void) : "Causes this entity to show the scan info associated with it."
 	//who holds the scanning state? scanvisor or the scanned entity? hmm...
 	//i could call output events from scanvisor, actually, but that'd be a bit messy.
 	
 	//Outputs
 	output OnScanStarted(void) : "Fired what the player started scanning this entity."
-	output OnScanAborted(void) : "Fired when the player stops scanning before it is completed."
+	//output OnScanAborted(void) : "Fired when the player stops scanning before it is completed."
 	output OnScanCompleted(void) : "Fired when this entity has been successfully scanned."
+]
+
+@PointClass base(Scannable, prop_dynamic) studioprop() = prop_dynamic_scannable
+[
+
 ]

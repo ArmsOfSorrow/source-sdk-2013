@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "6157"
-	"mapversion" "20"
+	"mapversion" "22"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -20,7 +20,7 @@ viewsettings
 world
 {
 	"id" "1"
-	"mapversion" "20"
+	"mapversion" "22"
 	"classname" "worldspawn"
 	"detailmaterial" "detail/detailsprites"
 	"detailvbsp" "detail.vbsp"
@@ -3520,6 +3520,32 @@ entity
 	"skin" "0"
 	"spawnflags" "256"
 	"origin" "-144 -1280 53"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "6720"
+	"classname" "prop_dynamic_scannable"
+	"angles" "0 0 0"
+	"fademindist" "-1"
+	"fadescale" "1"
+	"MaxAnimTime" "10"
+	"MinAnimTime" "5"
+	"model" "models/props_interiors/refrigerator01a.mdl"
+	"renderamt" "255"
+	"rendercolor" "255 255 255"
+	"scaninfo" "A fridge. Take a look inside, maybe it's got something left to eat?"
+	"scantime" "5.0"
+	"skin" "0"
+	"solid" "6"
+	"targetname" "scannable"
+	"origin" "-206.883 -1263.87 73"
 	editor
 	{
 		"color" "220 30 220"

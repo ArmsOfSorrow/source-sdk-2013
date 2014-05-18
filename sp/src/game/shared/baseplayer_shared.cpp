@@ -1580,7 +1580,6 @@ void CBasePlayer::CalcViewModelView( const Vector& eyeOrigin, const QAngle& eyeA
 	}
 }
 
-//used for scanning...probably the wrong place for doing this
 void CBasePlayer::CenterViewOnEntity(QAngle &eyeAngles)
 {
 	if (m_hScannedEntity.Get())

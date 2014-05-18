@@ -411,15 +411,19 @@ protected:
 class CScannableDynamicProp : public CDynamicProp, public CScannable
 {
 public:
+	//ugly multiple-inheritance-resolving stuff
+	using CScannable::NetworkProp;
+	using CScannable::PostConstructor;
+
 	DECLARE_CLASS(CScannableDynamicProp, CDynamicProp);
+	
+	//DECLARE_DATADESC();
 	CScannableDynamicProp();
 	~CScannableDynamicProp();
 	void Spawn();
 
 private:
-	//todo: link entity to class
 };
-
 
 
 // An interface so that objects parented to props can receive collision interaction events.
