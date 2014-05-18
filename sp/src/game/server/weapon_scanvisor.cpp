@@ -2,6 +2,7 @@
 #include "weapon_scanvisor.h"
 #include "player.h"
 #include "in_buttons.h"
+#include "func_scan.h"
 
 
 
@@ -23,21 +24,22 @@ void CWeaponScanvisor::PrimaryAttack()
 		
 		if (m_pTarget)
 		{
-			m_flScanTime += gpGlobals->frametime;
-			m_pPlayer->SetScannedEntity(m_pTarget);
-			Msg("m_flScanTime: %f \n", m_flScanTime);
-			Msg(m_pTarget->GetClassname());
+			m_pTarget->UpdateScanTime(m_flScanTime, m_pPlayer);
+			//m_flScanTime += gpGlobals->frametime;
+			//m_pPlayer->SetScannedEntity(m_pTarget); //call this in CScannable instead of here.
+			//Msg("m_flScanTime: %f \n", m_flScanTime);
+			//Msg(m_pTarget->GetClassname());
 		}
 
 	
-		if (m_flScanTime >= SCAN_TIME_NORMAL)
-		{
-			//pause and display stuff in vgui (in the future)
-			//for now, spam messages to the console
-			Msg("scan completed. entity info not implemented yet.");
+		//if (m_flScanTime >= SCAN_TIME_NORMAL)
+		//{
+		//	//pause and display stuff in vgui (in the future)
+		//	//for now, spam messages to the console
+		//	Msg("scan completed. entity info not implemented yet.");
 
-			//call showscaninfo here. some pause state would be needed, though.
-		}
+		//	//call showscaninfo here. some pause state would be needed, though.
+		//}
 	}
 }
 
@@ -56,8 +58,7 @@ void CWeaponScanvisor::AcquireTarget()
 
 	if (result.m_pEnt && result.DidHitNonWorldEntity())
 	{
-		//we've got a target!
-		m_pTarget = result.m_pEnt;
+		m_pTarget = dynamic_cast<CScannable*>(result.m_pEnt);
 	}
 	else
 	{

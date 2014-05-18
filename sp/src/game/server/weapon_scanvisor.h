@@ -7,6 +7,7 @@
 #pragma once
 #include "cbase.h"
 #include "basehlcombatweapon.h"
+#include "func_scan.h"
 
 
 #define SCAN_TIME_NORMAL 3.0f
@@ -31,7 +32,7 @@ private:
 	int m_nOldButtonState;
 
 	CBasePlayer *m_pPlayer;
-	CBaseEntity *m_pTarget; //this should be an own type derived from CModelEntity
+	CScannable *m_pTarget;
 
 	void AcquireTarget();
 };
