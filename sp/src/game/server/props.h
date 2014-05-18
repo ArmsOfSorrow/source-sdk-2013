@@ -15,6 +15,7 @@
 #include "physics_bone_follower.h"
 #include "player_pickup.h"
 #include "positionwatcher.h"
+#include "func_scan.h"
 
 //=============================================================================================================
 // PROP TYPES
@@ -406,6 +407,19 @@ private:
 protected:
 	CNetworkVar( bool, m_bAwake );
 };
+
+class CScannableDynamicProp : public CDynamicProp, public CScannable
+{
+public:
+	DECLARE_CLASS(CScannableDynamicProp, CDynamicProp);
+	CScannableDynamicProp();
+	~CScannableDynamicProp();
+	void Spawn();
+
+private:
+	//todo: link entity to class
+};
+
 
 
 // An interface so that objects parented to props can receive collision interaction events.

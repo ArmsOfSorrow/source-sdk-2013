@@ -41,3 +41,5 @@ void CScannable::InputShowScanInfo(inputdata_t &inputdata)
 	//ShowScanInfo();
 	Msg("InputShowScanInfo fired.\n");
 }
+
+//todo: link entity to class
