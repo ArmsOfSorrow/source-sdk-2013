@@ -1,7 +1,7 @@
 #pragma once
 #include "baseentity.h"
 
-class CScannable : public CBaseEntity
+class CScannable : public /*virtual*/ CBaseEntity //todo: should this be virtual?
 {
 public:
 	DECLARE_CLASS(CScannable, CBaseEntity);

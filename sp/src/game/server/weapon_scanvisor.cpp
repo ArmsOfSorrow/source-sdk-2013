@@ -22,11 +22,11 @@ void CWeaponScanvisor::PrimaryAttack()
 	{	
 		AcquireTarget();
 		
-		if (m_pTarget)
+		if (dynamic_cast<CScannable*>(m_pTarget))
 		{
-			m_pTarget->UpdateScanTime(m_flScanTime, m_pPlayer);
+			static_cast<CScannable*>(m_pTarget)->UpdateScanTime(m_flScanTime, m_pPlayer);
 			m_flScanTime += gpGlobals->frametime;
-			//m_pPlayer->SetScannedEntity(m_pTarget); //call this in CScannable instead of here.
+			m_pPlayer->SetScannedEntity(m_pTarget); //call this in CScannable instead of here.
 			//Msg("m_flScanTime: %f \n", m_flScanTime);
 			//Msg(m_pTarget->GetClassname());
 		}
@@ -58,8 +58,8 @@ void CWeaponScanvisor::AcquireTarget()
 
 	if (result.m_pEnt && result.DidHitNonWorldEntity())
 	{
-		m_pTarget = dynamic_cast<CScannable*>(result.m_pEnt);
-		//m_pTarget = result.m_pEnt;
+		//m_pTarget = dynamic_cast<CScannable*>(result.m_pEnt);
+		m_pTarget = result.m_pEnt;
 	}
 	else
 	{

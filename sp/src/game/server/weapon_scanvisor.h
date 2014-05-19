@@ -32,8 +32,8 @@ private:
 	int m_nOldButtonState;
 
 	CBasePlayer *m_pPlayer;
-	CScannable *m_pTarget;
-	//CBaseEntity *m_pTarget;
+	//CScannable *m_pTarget;
+	CBaseEntity *m_pTarget;
 
 	void AcquireTarget();
 };
