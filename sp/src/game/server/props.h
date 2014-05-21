@@ -412,8 +412,8 @@ class CScannableDynamicProp : public CDynamicProp, public CScannable
 {
 public:
 	//ugly multiple-inheritance-resolving stuff
-	using CDynamicProp::NetworkProp;
-	using CDynamicProp::PostConstructor;
+	//using CDynamicProp::NetworkProp;
+	//using CDynamicProp::PostConstructor;
 
 	DECLARE_CLASS(CScannableDynamicProp, CDynamicProp);
 	

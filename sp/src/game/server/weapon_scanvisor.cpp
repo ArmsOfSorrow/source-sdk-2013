@@ -24,7 +24,7 @@ void CWeaponScanvisor::PrimaryAttack()
 		
 		if (dynamic_cast<CScannable*>(m_pTarget))
 		{
-			static_cast<CScannable*>(m_pTarget)->UpdateScanTime(m_flScanTime, m_pPlayer);
+			dynamic_cast<CScannable*>(m_pTarget)->UpdateScanTime(m_flScanTime, m_pPlayer, m_pTarget);
 			m_flScanTime += gpGlobals->frametime;
 			m_pPlayer->SetScannedEntity(m_pTarget); //call this in CScannable instead of here.
 			//Msg("m_flScanTime: %f \n", m_flScanTime);
