@@ -411,13 +411,10 @@ protected:
 class CScannableDynamicProp : public CDynamicProp, public CScannable
 {
 public:
-	//ugly multiple-inheritance-resolving stuff
-	//using CDynamicProp::NetworkProp;
-	//using CDynamicProp::PostConstructor;
 
 	DECLARE_CLASS(CScannableDynamicProp, CDynamicProp);
 	
-	//DECLARE_DATADESC();
+	DECLARE_DATADESC();
 	CScannableDynamicProp();
 	~CScannableDynamicProp();
 	void Spawn();

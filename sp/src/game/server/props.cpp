@@ -6144,4 +6144,8 @@ void CScannableDynamicProp::Spawn()
 	BaseClass::Spawn();
 }
 
+BEGIN_DATADESC(CScannableDynamicProp)
+IMPLEMENT_SCANNABLE()
+END_DATADESC()
+
 LINK_ENTITY_TO_CLASS(prop_dynamic_scannable, CScannableDynamicProp);

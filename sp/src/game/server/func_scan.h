@@ -1,15 +1,14 @@
 #pragma once
 #include "baseentity.h"
 
-class CScannable/* : public CBaseEntity*/
+class CScannable
 {
 public:
 
 	CScannable(CBaseEntity *pBase);
 	~CScannable();
-	//DECLARE_CLASS(CScannable, CBaseEntity);
 	DECLARE_CLASS_NOBASE(CScannable);
-	DECLARE_DATADESC();
+	//DECLARE_DATADESC();
 	
 	COutputEvent m_OnScanStarted;
 	//COutputEvent m_OnScanAborted;		//this won't work as of now, i need to find a workaround.
@@ -27,5 +26,11 @@ private:
 	float m_flLastScanTime;
 	void ShowScanInfo();
 	CBaseEntity *m_pBase;
-	//the "proper" base could be held as a member pointer here.
 };
+
+#define IMPLEMENT_SCANNABLE() \
+DEFINE_KEYFIELD(m_flRequiredScanTime, FIELD_FLOAT, "scantime"), \
+DEFINE_KEYFIELD(m_szScanInfo, FIELD_STRING, "scaninfo"), \
+	\
+DEFINE_OUTPUT(m_OnScanStarted, "OnScanStarted"), \
+DEFINE_OUTPUT(m_OnScanCompleted, "OnScanCompleted") 

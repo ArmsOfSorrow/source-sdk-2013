@@ -17,7 +17,8 @@ bool CScannable::IsKnown()
 
 void CScannable::UpdateScanTime(float scantime, CBasePlayer *pPlayer, CBaseEntity *pBase) //i could pass a pointer to base here, couldn't i?
 {
-	Msg("updating scan time...");
+	Msg("updating scan time...\n");
+	Msg("%f\n",scantime);
 	//problem: i don't know how to call this when a scan is aborted.
 	//possible workaround: a periodically called think function
 	//maybe schedule think on first scan and stop on abort? that seems like a not too expensive option to me.
@@ -37,8 +38,10 @@ void CScannable::UpdateScanTime(float scantime, CBasePlayer *pPlayer, CBaseEntit
 		{
 			m_OnScanCompleted.FireOutput(pPlayer, pBase);
 			ShowScanInfo(); //this should display vgui overlay and pause everything but the gui.
+			Msg("Scan completed.\n");
 		}
 	}
+	m_flLastScanTime = scantime;
 }
 
 void CScannable::ShowScanInfo()
@@ -56,15 +59,16 @@ void CScannable::InputShowScanInfo(inputdata_t &inputdata)
 
 //LINK_ENTITY_TO_CLASS(func_scannable, CScannable);
 
-BEGIN_DATADESC_NO_BASE(CScannable)
+//BEGIN_DATADESC_NO_BASE(CScannable)
 //BEGIN_DATADESC(CScannable)
 
-DEFINE_KEYFIELD(m_flRequiredScanTime, FIELD_FLOAT, "scantime"),
-DEFINE_KEYFIELD(m_szScanInfo, FIELD_STRING, "scaninfo"),
-
-DEFINE_OUTPUT(m_OnScanStarted, "OnScanStarted"),
-DEFINE_OUTPUT(m_OnScanCompleted, "OnScanCompleted"),
+//#define IMPLEMENT_SCANNABLE() \
+//DEFINE_KEYFIELD(m_flRequiredScanTime, FIELD_FLOAT, "scantime"), \
+//DEFINE_KEYFIELD(m_szScanInfo, FIELD_STRING, "scaninfo"), \
+//	\
+//DEFINE_OUTPUT(m_OnScanStarted, "OnScanStarted"), \
+//DEFINE_OUTPUT(m_OnScanCompleted, "OnScanCompleted") \
 
 //DEFINE_INPUTFUNC(FIELD_VOID, "ShowScanInfo", InputShowScanInfo)
 
-END_DATADESC()
+//END_DATADESC()
