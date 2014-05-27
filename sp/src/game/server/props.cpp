@@ -41,7 +41,6 @@
 #include "physics_collisionevent.h"
 #include "gamestats.h"
 #include "vehicle_base.h"
-//#include "func_scan.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -6130,22 +6129,3 @@ static ConCommand ent_rotate("ent_rotate", CC_Ent_Rotate, "Rotates an entity by 
 
 // This is a dummy. The entity is entirely clientside.
 LINK_ENTITY_TO_CLASS( func_proprrespawnzone, CBaseEntity );
-
-CScannableDynamicProp::CScannableDynamicProp() : CScannable(this->GetBaseEntity())
-{
-}
-
-CScannableDynamicProp::~CScannableDynamicProp()
-{
-}
-
-void CScannableDynamicProp::Spawn()
-{
-	BaseClass::Spawn();
-}
-
-BEGIN_DATADESC(CScannableDynamicProp)
-IMPLEMENT_SCANNABLE()
-END_DATADESC()
-
-LINK_ENTITY_TO_CLASS(prop_dynamic_scannable, CScannableDynamicProp);

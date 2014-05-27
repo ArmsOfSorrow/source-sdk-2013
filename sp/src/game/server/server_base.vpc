@@ -82,6 +82,7 @@ $Project
 		$Folder "ltp source files"
 		{
 			$File	"weapon_scanvisor.cpp"
+			$File	"scannableprops.cpp"
 			$File	"func_scan.cpp"
 		}
 		
@@ -795,6 +796,7 @@ $Project
 		$Folder "ltp header files"
 		{
 			$File	"weapon_scanvisor.h"
+			$File	"scannableprops.h"
 			$File	"func_scan.h"
 		}
 		

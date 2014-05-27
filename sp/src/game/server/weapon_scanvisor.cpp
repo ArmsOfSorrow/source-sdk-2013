@@ -9,11 +9,12 @@
 CWeaponScanvisor::CWeaponScanvisor()
 {
 	m_bIsCurrentlyScanning = false;
-	m_pPlayer = UTIL_GetLocalPlayer();
-	if (m_pPlayer)
-	{
-		m_nOldButtonState = m_pPlayer->m_nButtons;
-	}
+	m_nOldButtonState = 0;
+}
+
+void CWeaponScanvisor::OnPickedUp(CBaseCombatCharacter *pNewOwner)
+{
+	m_pPlayer = ToBasePlayer(pNewOwner); 
 }
 
 void CWeaponScanvisor::PrimaryAttack()
@@ -26,20 +27,7 @@ void CWeaponScanvisor::PrimaryAttack()
 		{
 			dynamic_cast<CScannable*>(m_pTarget)->UpdateScanTime(m_flScanTime, m_pPlayer, m_pTarget);
 			m_flScanTime += gpGlobals->frametime;
-			m_pPlayer->SetScannedEntity(m_pTarget); //call this in CScannable instead of here.
-			//Msg("m_flScanTime: %f \n", m_flScanTime);
-			//Msg(m_pTarget->GetClassname());
 		}
-
-	
-		//if (m_flScanTime >= SCAN_TIME_NORMAL)
-		//{
-		//	//pause and display stuff in vgui (in the future)
-		//	//for now, spam messages to the console
-		//	Msg("scan completed. entity info not implemented yet.");
-
-		//	//call showscaninfo here. some pause state would be needed, though.
-		//}
 	}
 }
 
@@ -58,7 +46,6 @@ void CWeaponScanvisor::AcquireTarget()
 
 	if (result.m_pEnt && result.DidHitNonWorldEntity())
 	{
-		//m_pTarget = dynamic_cast<CScannable*>(result.m_pEnt);
 		m_pTarget = result.m_pEnt;
 	}
 	else
@@ -75,7 +62,6 @@ void CWeaponScanvisor::ItemPreFrame()
 	{
 		if (m_pPlayer->m_nButtons & IN_ATTACK && m_nOldButtonState & IN_ATTACK)
 		{
-			//we're still scanning, update scan time in primary attack
 			m_bIsCurrentlyScanning = true;
 		}
 		else if (m_pPlayer->m_nButtons & IN_ATTACK)

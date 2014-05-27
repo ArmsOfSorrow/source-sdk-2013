@@ -26,3 +26,6 @@
 [
 
 ]
+
+//change the model as soon as there is one (if there even will be any at all)
+@PointClass base(Weapon) studio("models/weapons/w_stunbaton.mdl") = weapon_scanvisor : "Scan Visor" []

@@ -408,20 +408,6 @@ protected:
 	CNetworkVar( bool, m_bAwake );
 };
 
-class CScannableDynamicProp : public CDynamicProp, public CScannable
-{
-public:
-
-	DECLARE_CLASS(CScannableDynamicProp, CDynamicProp);
-	
-	DECLARE_DATADESC();
-	CScannableDynamicProp();
-	~CScannableDynamicProp();
-	void Spawn();
-
-private:
-};
-
 
 // An interface so that objects parented to props can receive collision interaction events.
 enum parentCollisionInteraction_t

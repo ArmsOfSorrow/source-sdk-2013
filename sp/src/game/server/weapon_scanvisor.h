@@ -21,7 +21,8 @@ public:
 	CWeaponScanvisor();
 	void PrimaryAttack();
 	void ItemPreFrame();
-	void DryFire();
+	void DryFire(); //if object is out of range. not the best name, though.
+	void OnPickedUp(CBaseCombatCharacter *pNewOwner);
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
@@ -32,7 +33,6 @@ private:
 	int m_nOldButtonState;
 
 	CBasePlayer *m_pPlayer;
-	//CScannable *m_pTarget;
 	CBaseEntity *m_pTarget;
 
 	void AcquireTarget();
