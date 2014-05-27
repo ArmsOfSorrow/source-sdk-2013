@@ -3,6 +3,7 @@
 	game 		"ltp"
 	title 		"HALF-LIFE'"
 	title2		""
+	supportsvr	1
 
 	type		singleplayer_only
 
