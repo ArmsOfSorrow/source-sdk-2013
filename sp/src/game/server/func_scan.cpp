@@ -47,7 +47,13 @@ void CScannable::UpdateScanTime(float scantime, CBasePlayer *pPlayer, CBaseEntit
 
 void CScannable::ShowScanInfo(CBasePlayer *pPlayer, CBaseEntity *pBase)
 {
-	//do vgui stuff inside here
-	Msg(m_szScanInfo.ToCStr());
+	//dispatch message to hud.
+	CSingleUserRecipientFilter user(pPlayer);
+	user.MakeReliable();
+
+	UserMessageBegin(user, "ShowScanInfo");
+	WRITE_STRING(m_szScanInfo.ToCStr());
+	MessageEnd();
+
 	m_OnScanCompleted.FireOutput(pPlayer, pBase);
 }

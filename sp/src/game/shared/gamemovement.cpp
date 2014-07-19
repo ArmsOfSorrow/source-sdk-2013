@@ -2434,7 +2434,7 @@ bool CGameMovement::CheckJumpButton( void )
 	{
 #if defined(HL2_DLL) || defined(HL2_CLIENT_DLL)
 		Assert( GetCurrentGravity() == 600.0f );
-		flMul = 160.0f;	// approx. 21 units.
+		flMul = /*160.0f*/300.0f;	// approx. 21 units. 39.375 units for 300.
 #else
 		Assert( GetCurrentGravity() == 800.0f );
 		flMul = 268.3281572999747f;

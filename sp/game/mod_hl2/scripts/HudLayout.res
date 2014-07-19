@@ -35,6 +35,19 @@
 		"digit_ypos" "-1"
 	}
 	
+	HudScanInfo [$WIN32]
+	{
+		"fieldName"		"HudScanInfo"
+		"xpos"	"250"
+		"ypos"	"150"
+		"wide"	"300"
+		"tall"	"200"
+		"visible" "0"
+		"enabled" "1"
+		"text_xpos" "0"
+		"text_ypos" "0"
+	}
+	
 	HudSuit [$WIN32]
 	{
 		"fieldName"		"HudSuit"
