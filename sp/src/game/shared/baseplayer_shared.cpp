@@ -2103,3 +2103,7 @@ bool fogparams_t::operator !=( const fogparams_t& other ) const
 	return false;
 }
 
+CBaseEntity *CBasePlayer::GetScannedEntity()
+{
+	return m_hScannedEntity;
+}

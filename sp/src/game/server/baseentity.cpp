@@ -3042,6 +3042,7 @@ void CBaseEntity::MakeDormant( void )
 	SetNextThink( TICK_NEVER_THINK );
 }
 
+
 int CBaseEntity::IsDormant( void )
 {
 	return IsEFlagSet( EFL_DORMANT );

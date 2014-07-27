@@ -300,6 +300,7 @@ public:
 	bool				IsPoisoned( void ) { return m_Local.m_bPoisoned; }
 
 	C_BaseEntity				*GetUseEntity();
+	CBaseEntity					*GetScannedEntity();
 
 	// Vehicles...
 	IClientVehicle			*GetVehicle();

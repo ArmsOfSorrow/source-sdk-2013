@@ -79,3 +79,8 @@ sp/game/mod_hl2/cfg/server_blacklist.txt
 *.vmx
 sp/game/mod_hl2/cfg/autoexec.cfg
 *.lib
+*.sav
+*.hl1
+*.hl2
+*.hl3
+sp/game/mod_hl2/save/*

@@ -176,6 +176,7 @@ $Project
 		$Folder "ltp source files"
 		{
 			$File "vgui_scaninfopanel.cpp"
+			$File "hud_scaninfo.cpp"
 		}
 	
 		$File	"hl2\C_Func_Monitor.cpp"

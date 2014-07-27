@@ -1282,11 +1282,6 @@ inline void CBasePlayer::SetScannedEntity(CBaseEntity *pScannedEntity)
 	m_hScannedEntity = pScannedEntity;
 }
 
-inline CBaseEntity *CBasePlayer::GetScannedEntity()
-{
-	return m_hScannedEntity;
-}
-
 // Bot accessors...
 inline void CBasePlayer::SetTimeBase( float flTimeBase ) 
 { 
