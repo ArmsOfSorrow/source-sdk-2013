@@ -11,6 +11,7 @@
 #include <vgui\IScheme.h>
 #include <vgui_controls\Label.h>
 #include "iinput.h"
+#include "iscaninfopanel.h"
 
 
 class CHudScanInfo : public CHudElement, public vgui::EditablePanel
@@ -18,6 +19,7 @@ class CHudScanInfo : public CHudElement, public vgui::EditablePanel
 	DECLARE_CLASS_SIMPLE(CHudScanInfo, vgui::EditablePanel);
 	
 public:
+
 	CHudScanInfo(const char *pElementName);
 	~CHudScanInfo();
 	virtual void Init();
@@ -25,19 +27,19 @@ public:
 	virtual bool ShouldDraw();
 	virtual void Paint();
 	virtual void OnThink();
-	virtual void OnTick();
 	void MsgFunc_ShowScanInfo(bf_read &msg);
 	
 
 private:
-	wchar_t *m_pScanInfo;
-	char m_szToken[128];
+
 	int m_nOldButtonState;
+	float m_flLastInputTime;
+	const float m_flFadeThreshold = 0.5f;
 	bool m_bScanCompleted;
 	bool m_bShouldDraw;
 	bool m_bOldDrawState;
-	float m_flLastInputTime;
-	vgui::Label *m_scanTextLabel;
+	char m_szToken[128];
+	vgui::Label *m_pScanTextLabel;
 	
 	CPanelAnimationVar(vgui::HFont, m_hTextFont, "TextFont", "HudSelectionText");
 	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "0");
@@ -50,42 +52,48 @@ DECLARE_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);
 
 CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName), BaseClass(nullptr, "HudScanInfo")
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport(); //change this to scaninfopanel
+	vgui::Panel *pParent = g_pClientMode->GetViewport();
 	SetParent(pParent);
 
-	LoadControlSettings("resource/scaninfo.res");
-	m_scanTextLabel = FindControl<vgui::Label>("ScanTextLabel", true);
-	m_pScanInfo = new wchar_t[2048];
 	m_nOldButtonState = 0;
+	m_flLastInputTime = 0.0f;
 	m_bScanCompleted = false;
+	m_bShouldDraw = false;
 	m_bOldDrawState = false;
-	m_flLastInputTime = -1.5f;
+
+	LoadControlSettings("resource/scaninfo.res");
+	m_pScanTextLabel = FindControl<vgui::Label>("ScanTextLabel", true);
 }
 
 CHudScanInfo::~CHudScanInfo()
 {
-	delete[] m_pScanInfo;
-
-	if (m_scanTextLabel && !m_scanTextLabel->IsAutoDeleteSet())
+	if (m_pScanTextLabel && !m_pScanTextLabel->IsAutoDeleteSet())
 	{
-		delete m_scanTextLabel;
-		m_scanTextLabel = nullptr;
+		delete m_pScanTextLabel;
+		m_pScanTextLabel = nullptr;
 	}
 }
 
 void CHudScanInfo::Init()
 {
 	HOOK_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);
-	g_pVGui->AddTickSignal(this->GetVPanel(), 50);
 }
 
 void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
 {
 	BaseClass::ApplySchemeSettings(pScheme);
+
+	int x, y, wide, tall; //tall (from hud size) is not used in resizing
+	GetPos(x, y);
+	GetHudSize(wide, tall);
+
+	SetBounds(x, y, wide-2*x, GetTall());
 }
 
 bool CHudScanInfo::ShouldDraw()
 {
+	m_bOldDrawState = m_bShouldDraw;
+
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 
 	if (pPlayer)
@@ -93,39 +101,28 @@ bool CHudScanInfo::ShouldDraw()
 		if (pPlayer->GetScannedEntity() && m_bScanCompleted)
 		{
 			m_bShouldDraw = true;
-			return m_bShouldDraw;
 		}
 		else
 		{
+			//we don't have a scanned entity anymore
 			m_bScanCompleted = false;
+			m_bShouldDraw = false;
 		}
 	}
-	m_bShouldDraw = false; //we don't have a scanned entity anymore
-
-	return m_bShouldDraw || (gpGlobals->curtime - m_flLastInputTime) < 1.5f;
+	
+	return m_bShouldDraw || (gpGlobals->curtime - m_flLastInputTime) < m_flFadeThreshold;
 }
 
 void CHudScanInfo::Paint()
 {
-	//check if it needs to be drawn at all, i.e. if the player has a scanned entity 
-	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-
-	if (!pPlayer)
-		return;
+	//maybe check for player state/entity flags to not draw the HUD under special circumstances
 	
-	int x, y, wide, tall;
-	Color c(0, 0, 0);
-	GetPos(x, y);
-	wide = GetWide();
-	tall = GetTall();
 	SetAlpha(m_flAlphaOverride);
-	
-	//Msg("Alpha: %i\n", GetAlpha());
 	g_pMatSystemSurface->DrawSetTextFont(m_hTextFont);
 	g_pMatSystemSurface->DrawSetTextColor(255,255,255, m_flTextAlphaOverride);
-	m_scanTextLabel->SetText(m_szToken);
-	m_scanTextLabel->SetAlpha(m_flTextAlphaOverride);
-	//g_pMatSystemSurface->DrawUnicodeString(m_pScanInfo);
+
+	m_pScanTextLabel->SetText(m_szToken);
+	m_pScanTextLabel->SetAlpha(m_flTextAlphaOverride);
 }
 
 void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
@@ -135,37 +132,29 @@ void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
 	m_bScanCompleted = true;
 }
 
-//this is only called when the panel is drawn, that means the old draw state will always be true.
 void CHudScanInfo::OnThink()
 {
-	//check for anim state and update accordingly
-
-	//i need to know the last input time...or just check if the player is still holding down the attack key. if not, start fading out.
+	//if we landed here, ShouldDraw() returned true. now there are 3 cases:
+	//- it's the first frame after having finished scanning. in that case, fade in the panel.
+	//- it's not the first frame, but we're still scanning. we should update the last input time.
+	//- we're not scanning anymore. start fading out.
 
 	if (gHUD.m_iKeyBits & IN_ATTACK)
 	{
-		if (m_bOldDrawState == false)
+		if (m_bOldDrawState == false && m_bScanCompleted)
 		{
 			//fade in, as we were not drawing in the last frame
 			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("OpenScanInfo");
 		}
+		m_flLastInputTime = gpGlobals->curtime;
 	}
 	else
 	{
-		//he was holding down last frame
 		if (m_nOldButtonState & IN_ATTACK)
 		{
-			m_flLastInputTime = gpGlobals->curtime;
-			m_nOldButtonState &= ~IN_ATTACK; //zero out the attack bit, since we're not holding down anymore
 			//start fading out here.
 			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("FadeOutScanInfo");
 		}
 	}
 	m_nOldButtonState = gHUD.m_iKeyBits;
-}
-
-void CHudScanInfo::OnTick()
-{
-	//maybe i should find a better workaround, but for now this'll stay here.
-	m_bOldDrawState = m_bShouldDraw;
 }

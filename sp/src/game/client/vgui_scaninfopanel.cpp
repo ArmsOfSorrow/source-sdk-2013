@@ -8,8 +8,6 @@
 #include <vgui/IScheme.h>
 #include <vgui/IPanel.h>
 
-static ConVar cl_ltp_showscaninfopanel("cl_ltp_showscaninfopanel", "1", 0, "Draw scaninfopanel. Just for testing purposes...");
-
 class CScanInfoPanel : public vgui::Panel
 {
 	DECLARE_CLASS_SIMPLE(CScanInfoPanel, vgui::Panel);
@@ -62,6 +60,17 @@ public:
 	CScanInfo()
 	{
 		pScanInfoPanel = nullptr;
+	}
+
+	vgui::Panel *Get()
+	{
+		if (pScanInfoPanel)
+		{
+			return pScanInfoPanel;
+		}
+
+		DevMsg("scaninfopanel does not exist.");
+		return nullptr;
 	}
 
 	void Create(vgui::VPANEL parent)

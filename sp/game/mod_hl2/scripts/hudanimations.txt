@@ -64,8 +64,6 @@ event OpenScanInfo
 
 event FadeOutScanInfo
 {
-	StopEvent OpenScanInfo 0.0
-	
 	Animate HudScanInfo Alpha "0" Linear 0.0 0.4
 	Animate HudScanInfo TextAlpha "0" Linear 0.0 0.4
 }

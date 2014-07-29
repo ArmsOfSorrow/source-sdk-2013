@@ -130,10 +130,12 @@ static void VGui_VideoMode_AdjustForModeChange( void )
 	fps->Destroy();
 	messagechars->Destroy();
 	loadingdisc->Destroy();
+	sp->Destroy();
 
 	// Recreate our panels.
 	VPANEL gameToolParent = enginevgui->GetPanel( PANEL_CLIENTDLL_TOOLS );
 	VPANEL toolParent = enginevgui->GetPanel( PANEL_TOOLS );
+	VPANEL ingameParent = enginevgui->GetPanel(PANEL_INGAMESCREENS);
 #if defined( TRACK_BLOCKING_IO )
 	VPANEL gameDLLPanel = enginevgui->GetPanel( PANEL_GAMEDLL );
 #endif
@@ -148,6 +150,8 @@ static void VGui_VideoMode_AdjustForModeChange( void )
 #endif
 	netgraphpanel->Create( toolParent );
 	debugoverlaypanel->Create( gameToolParent );
+
+	sp->Create(ingameParent);
 }
 
 static void VGui_OneTimeInit()
@@ -198,6 +202,7 @@ void VGui_CreateGlobalPanels( void )
 {
 	VPANEL gameToolParent = enginevgui->GetPanel( PANEL_CLIENTDLL_TOOLS );
 	VPANEL toolParent = enginevgui->GetPanel( PANEL_TOOLS );
+	VPANEL ingameParent = enginevgui->GetPanel(PANEL_INGAMESCREENS);
 #if defined( TRACK_BLOCKING_IO )
 	VPANEL gameDLLPanel = enginevgui->GetPanel( PANEL_GAMEDLL );
 #endif
@@ -222,7 +227,7 @@ void VGui_CreateGlobalPanels( void )
 	g_pSixenseInput->CreateGUI( gameToolParent );
 #endif
 
-	VPANEL ingameParent = enginevgui->GetPanel(PANEL_INGAMESCREENS);
+	//create scaninfopanel
 	sp->Create(ingameParent);
 }
 
