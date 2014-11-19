@@ -406,12 +406,27 @@ const wchar_t *RichText::ResolveLocalizedTextAndVariables( char const *pchLookup
 //-----------------------------------------------------------------------------
 void RichText::SetText(const char *text)
 {
+
 	if (!text)
 	{
 		text = "";
 	}
 
-	wchar_t unicode[1024];
+	//move this code into a separate function
+	char tokenString[1024];
+	strcpy_s(tokenString, text);
+	
+	char *pTok;
+	char *pNextTok;
+	pTok = strtok_s(tokenString, " ", &pNextTok);
+	CUtlVector<char*> tokens;
+	while (pTok != nullptr)
+	{
+		tokens.AddToTail(pTok);
+		pTok = strtok_s(nullptr, " ", &pNextTok);
+	}
+
+	wchar_t unicode[4096]; //standard: 1024
 
 	if (text[0] == '#')
 	{
@@ -2035,6 +2050,8 @@ void RichText::InsertChar(wchar_t wch)
 //-----------------------------------------------------------------------------
 void RichText::InsertString(const char *text)
 {
+	
+
 	if (text[0] == '#')
 	{
 		wchar_t unicode[ 1024 ];

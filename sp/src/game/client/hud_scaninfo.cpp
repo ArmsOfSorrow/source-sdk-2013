@@ -9,7 +9,8 @@
 #include "in_buttons.h"
 #include <vgui\IVGui.h>
 #include <vgui\IScheme.h>
-#include <vgui_controls\Label.h>
+//#include <vgui_controls\Label.h>
+#include <vgui_controls\RichText.h>
 #include "iinput.h"
 #include "iscaninfopanel.h"
 
@@ -26,6 +27,7 @@ public:
 	virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
 	virtual bool ShouldDraw();
 	virtual void Paint();
+	virtual void ProcessInput();
 	virtual void OnThink();
 	void MsgFunc_ShowScanInfo(bf_read &msg);
 	
@@ -39,7 +41,7 @@ private:
 	bool m_bShouldDraw;
 	bool m_bOldDrawState;
 	char m_szToken[128];
-	vgui::Label *m_pScanTextLabel;
+	vgui::RichText *m_pScanTextLabel;
 	
 	CPanelAnimationVar(vgui::HFont, m_hTextFont, "TextFont", "HudSelectionText");
 	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "0");
@@ -62,7 +64,8 @@ CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName)
 	m_bOldDrawState = false;
 
 	LoadControlSettings("resource/scaninfo.res");
-	m_pScanTextLabel = FindControl<vgui::Label>("ScanTextLabel", true);
+	m_pScanTextLabel = FindControl<vgui::RichText>("ScanTextLabel", true);
+	m_pScanTextLabel->SetKeyBoardInputEnabled(true);
 }
 
 CHudScanInfo::~CHudScanInfo()
@@ -79,6 +82,23 @@ void CHudScanInfo::Init()
 	HOOK_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);
 }
 
+void CHudScanInfo::ProcessInput()
+{
+	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
+	if (pPlayer)
+	{
+		//so, the next time you come back, the plan looks like this:
+		//1. leave it parented to viewport, since changing it to scaninfopanel would involve
+		//   changes in regards to input.  (HUD has the ProcessInput method)
+		//2. fix richtext's localization functions to handle multiple tokens at once
+		//3. on button press (ATTACK2), "scroll", or rather load the text from the
+		//   next token (if there is any left) and display that. Deactivate that scrollbar 
+		//   while you're at it, too.
+		//4. ShouldDraw and OnThink take care of fading out and deactivating.
+	}
+
+}
+
 void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
 {
 	BaseClass::ApplySchemeSettings(pScheme);
@@ -88,6 +108,8 @@ void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
 	GetHudSize(wide, tall);
 
 	SetBounds(x, y, wide-2*x, GetTall());
+	m_pScanTextLabel->SetFont(pScheme->GetFont("DebugFixed"));
+	
 }
 
 bool CHudScanInfo::ShouldDraw()
@@ -121,17 +143,24 @@ void CHudScanInfo::Paint()
 	g_pMatSystemSurface->DrawSetTextFont(m_hTextFont);
 	g_pMatSystemSurface->DrawSetTextColor(255,255,255, m_flTextAlphaOverride);
 
-	m_pScanTextLabel->SetText(m_szToken);
 	m_pScanTextLabel->SetAlpha(m_flTextAlphaOverride);
+	//Msg("Focus: %d ", m_pScanTextLabel->HasFocus());
 }
 
 void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
 {
 	//use tokens only, as string size is limited to 128 bytes.
-	msg.ReadString(m_szToken, sizeof(m_szToken));
-	m_bScanCompleted = true;
+	if (!IsVisible())
+	{
+		msg.ReadString(m_szToken, sizeof(m_szToken));
+		m_bScanCompleted = true;
+		m_pScanTextLabel->SetText(m_szToken);
+		//m_pScanTextLabel->InsertString(m_szToken);
+	}
 }
 
+//heads up: there is a bug probably related to the animations:
+//if quickly tapping attack while the menu is fading out, it doesn't fade in anymore
 void CHudScanInfo::OnThink()
 {
 	//if we landed here, ShouldDraw() returned true. now there are 3 cases:

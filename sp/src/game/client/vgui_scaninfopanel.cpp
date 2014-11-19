@@ -82,7 +82,7 @@ public:
 	{
 		if (pScanInfoPanel)
 		{
-			pScanInfoPanel->SetParent(nullptr); // i wonder if this actually works
+			pScanInfoPanel->SetParent(nullptr);
 			delete pScanInfoPanel;
 			pScanInfoPanel = nullptr;
 		}
