@@ -5,6 +5,7 @@
 //==================================================================
 
 @include "base.fgd"
+@include "halflife2.fgd"
 
 @BaseClass base(Targetname) = Scannable
 [

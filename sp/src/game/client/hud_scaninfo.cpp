@@ -95,6 +95,18 @@ void CHudScanInfo::ProcessInput()
 		//   next token (if there is any left) and display that. Deactivate that scrollbar 
 		//   while you're at it, too.
 		//4. ShouldDraw and OnThink take care of fading out and deactivating.
+		
+		//anyway, I've just found out that I can set key bindings and a lot of useful stuff inside config.cfg
+		//kb_act.lst is most likely for the UI
+		//F4 is default to set the paused state, but commands seem to go through; the problem is, that most
+		//of them are only executed on unpause (though unknown commands trigger a message in dev mode)
+
+		//TODO: find the right scroll amount and input bits for mouse wheel (how does weapon selection do that?)
+		if (gHUD.m_iKeyBits & IN_ATTACK2)
+		{
+			KeyValues* kv = new KeyValues("MoveScrollBar", "delta", -20);
+			this->PostMessage(m_pScanTextLabel, kv);
+		}
 	}
 
 }
@@ -153,7 +165,7 @@ void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
 	if (!IsVisible())
 	{
 		msg.ReadString(m_szToken, sizeof(m_szToken));
-		m_bScanCompleted = true;
+		m_bScanCompleted = true; //this is set when receiving the HUD message and unset in ShouldDraw...actually does the same as m_bShouldDraw, doesn't it?
 		m_pScanTextLabel->SetText(m_szToken);
 		//m_pScanTextLabel->InsertString(m_szToken);
 	}
