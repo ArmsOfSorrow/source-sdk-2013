@@ -32,9 +32,9 @@ private:
 	float m_flScanTime;
 	int m_nOldButtonState;
 
-	CBasePlayer *m_pPlayer;
+	//CBasePlayer *m_pPlayer;
 	CBaseEntity *m_pTarget;
 
-	void AcquireTarget();
+	void AcquireTarget(CBasePlayer *pPlayer);
 };
 
