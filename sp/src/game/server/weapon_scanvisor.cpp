@@ -13,9 +13,16 @@ CWeaponScanvisor::CWeaponScanvisor()
 	m_nOldButtonState = 0;
 }
 
-void CWeaponScanvisor::OnPickedUp(CBaseCombatCharacter *pNewOwner)
+void CWeaponScanvisor::Activate()
 {
-	//m_pPlayer = ToBasePlayer(pNewOwner); 
+	BaseClass::Activate();
+	CBasePlayer *pPlayer = ToBasePlayer(this->GetOwner());
+
+	if (pPlayer && dynamic_cast<CWeaponScanvisor*>(pPlayer->GetActiveWeapon()))
+	{
+		//if the player owns us from the start and we're actively carried
+		ShowScannablesInLevel(true);
+	}
 }
 
 void CWeaponScanvisor::PrimaryAttack()
@@ -36,7 +43,7 @@ void CWeaponScanvisor::PrimaryAttack()
 
 //-----------------------------------------------------------------------------
 // Purpose: Fires a trace forward to check if there is an object in 
-//			front of the player.
+//			front of the player and sets the target member of this class.
 //-----------------------------------------------------------------------------
 void CWeaponScanvisor::AcquireTarget(CBasePlayer *pPlayer)
 {
@@ -91,6 +98,39 @@ void CWeaponScanvisor::ItemPreFrame()
 	BaseClass::ItemPreFrame();
 }
 
+void CWeaponScanvisor::Equip(CBaseCombatCharacter *pOwner)
+{
+	BaseClass::Equip(pOwner);
+	ShowScannablesInLevel(true);
+}
+
+bool CWeaponScanvisor::Holster(CBaseCombatWeapon *pSwitchingTo)
+{
+
+}
+
+void CWeaponScanvisor::ShowScannablesInLevel(bool show)
+{
+	CBaseEntity *pEnt = gEntList.FindEntityByClassname(nullptr, "scannable_*");
+	
+	if (show)
+	{
+		//set functor for activating objects
+	}
+	else
+	{
+		//set functor for deactivting objects
+	}
+
+	//use functor in this block
+	while (pEnt)
+	{
+		Msg("found ent with classname %s, entity name %s\n", pEnt->GetClassname(), pEnt->GetEntityName());
+
+		pEnt = gEntList.FindEntityByClassname(pEnt, "scannable_*");
+	}
+}
+
 LINK_ENTITY_TO_CLASS(weapon_scanvisor, CWeaponScanvisor);
 
 PRECACHE_WEAPON_REGISTER(weapon_scanvisor);
@@ -100,43 +140,3 @@ END_SEND_TABLE()
 
 BEGIN_DATADESC(CWeaponScanvisor)
 END_DATADESC()
-
-//void PauseEntities(IConVar *pVar, const char *pOldValue, float flOldValue);
-
-//ConVar pause_entities("ltp_pause", "0", FCVAR_CHEAT, "put all entities into a dormant state", PauseEntities);
-//ConCommand pause_ents("ltp_pause_entities", PauseEntities, "puts all entities into a dormant state.", 0);
-
-//void PauseEntities(IConVar *pVar, const char *pOldValue, float flOldValue)
-//{
-//
-//	//CBaseEntity *pEnt = gEntList.FindEntityByClassname(nullptr, "npc_*");
-//	CBaseEntity *pEnt = gEntList.FirstEnt();
-//
-//	if (pause_entities.GetBool())
-//	{
-//		while (pEnt)
-//		{
-//			/*CAI_BaseNPC *pNPC = dynamic_cast<CAI_BaseNPC*>(pEnt);
-//			if (pNPC)
-//			{
-//				pNPC->MakeDormant();
-//			}
-//			pEnt = gEntList.FindEntityByClassname(pEnt, "npc_*");*/
-//
-//			pEnt->MakeDormant();
-//			pEnt = gEntList.NextEnt(pEnt);
-//		}
-//	}
-//	else
-//	{
-//
-//	}
-//
-//	//so...basic freezing does work, although there are several limitations which will
-//	//inevitably lead to me writing my own function(s):
-//	//1) dormant objects are not drawn
-//	//2) while player movement is frozen, mouse movement is not
-//	//3) there is no method to reactivate dormant entities
-//	
-//	//also, i should move this out of weapon_scanvisor.cpp
-//}

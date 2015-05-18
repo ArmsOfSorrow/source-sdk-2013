@@ -28,4 +28,4 @@ IMPLEMENT_SCANNABLE()
 
 END_DATADESC()
 
-LINK_ENTITY_TO_CLASS(prop_dynamic_scannable, CScannableDynamicProp);
+LINK_ENTITY_TO_CLASS(scannable_prop_dynamic, CScannableDynamicProp);

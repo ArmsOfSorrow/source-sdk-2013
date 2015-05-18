@@ -19,10 +19,12 @@ class CWeaponScanvisor : public CBaseHLCombatWeapon
 
 public:
 	CWeaponScanvisor();
-	void PrimaryAttack();
-	void ItemPreFrame();
-	void DryFire(); //if object is out of range. not the best name, though.
-	void OnPickedUp(CBaseCombatCharacter *pNewOwner);
+	virtual void PrimaryAttack() override;
+	virtual void ItemPreFrame() override;
+	virtual void Activate() override;
+	//void DryFire(); //if object is out of range. not the best name, though.
+	virtual void Equip(CBaseCombatCharacter *pOwner) override;
+	virtual bool Holster(CBaseCombatWeapon *pSwitchingTo) override;
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
@@ -32,9 +34,9 @@ private:
 	float m_flScanTime;
 	int m_nOldButtonState;
 
-	//CBasePlayer *m_pPlayer;
 	CBaseEntity *m_pTarget;
 
 	void AcquireTarget(CBasePlayer *pPlayer);
+	void ShowScannablesInLevel(bool show);
 };
 

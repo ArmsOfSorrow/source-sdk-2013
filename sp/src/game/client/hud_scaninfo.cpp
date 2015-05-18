@@ -9,7 +9,6 @@
 #include "in_buttons.h"
 #include <vgui\IVGui.h>
 #include <vgui\IScheme.h>
-//#include <vgui_controls\Label.h>
 #include <vgui_controls\RichText.h>
 #include "iinput.h"
 #include "iscaninfopanel.h"
@@ -101,7 +100,9 @@ void CHudScanInfo::ProcessInput()
 		//F4 is default to set the paused state, but commands seem to go through; the problem is, that most
 		//of them are only executed on unpause (though unknown commands trigger a message in dev mode)
 
-		//TODO: find the right scroll amount and input bits for mouse wheel (how does weapon selection do that?)
+		//TODO: find the right scroll amount
+		//there are no input bits for the mouse wheel. weapon selection does its work with a usercmd, but we will
+		//need weapon selection (most likely), so we need to find another way to make this
 		if (gHUD.m_iKeyBits & IN_ATTACK2)
 		{
 			KeyValues* kv = new KeyValues("MoveScrollBar", "delta", -20);

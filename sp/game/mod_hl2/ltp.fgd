@@ -23,7 +23,7 @@
 	output OnScanCompleted(void) : "Fired when this entity has been successfully scanned."
 ]
 
-@PointClass base(Scannable, prop_dynamic) studioprop() = prop_dynamic_scannable
+@PointClass base(Scannable, prop_dynamic) studioprop() = scannable_prop_dynamic
 [
 
 ]
