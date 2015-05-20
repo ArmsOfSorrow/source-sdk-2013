@@ -13,7 +13,8 @@ public:
 	CScannableDynamicProp();
 	~CScannableDynamicProp();
 	void Spawn();
-	void InputShowScanInfo(inputdata_t &inputdata);
+	//void InputShowScanInfo(inputdata_t &inputdata);
+	//unneeded, since
 
 private:
 };

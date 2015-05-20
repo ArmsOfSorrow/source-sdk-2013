@@ -47,6 +47,8 @@ void CWeaponScanvisor::PrimaryAttack()
 //-----------------------------------------------------------------------------
 void CWeaponScanvisor::AcquireTarget(CBasePlayer *pPlayer)
 {
+	if (m_pTarget)
+		return;
 
 	trace_t result;
 	Vector vecForward, vecStart, vecEnd;
@@ -73,11 +75,12 @@ void CWeaponScanvisor::ItemPreFrame()
 	//before the player moves, set the right state for primary attack if the attack button is pressed.
 	if (pPlayer)
 	{
-		if (pPlayer->m_nButtons & IN_ATTACK && m_nOldButtonState & IN_ATTACK)
+
+		if (pPlayer->m_nButtons & IN_ATTACK)
 		{
 			m_bIsCurrentlyScanning = true;
 		}
-		else if (pPlayer->m_nButtons & IN_ATTACK)
+		else if ((pPlayer->m_nButtons & IN_ATTACK) && !(m_nOldButtonState & IN_ATTACK))
 		{
 			//we're starting a new scan...
 			m_flScanTime = 0;
@@ -92,10 +95,10 @@ void CWeaponScanvisor::ItemPreFrame()
 			m_bIsCurrentlyScanning = false;
 		}
 
-		m_nOldButtonState = pPlayer->m_nButtons; //save old button state
+		m_nOldButtonState = pPlayer->m_nButtons;
 	}
 
-	BaseClass::ItemPreFrame();
+	BaseClass::ItemPreFrame(); //should this be done before our stuff or after?
 }
 
 void CWeaponScanvisor::Equip(CBaseCombatCharacter *pOwner)
@@ -104,10 +107,10 @@ void CWeaponScanvisor::Equip(CBaseCombatCharacter *pOwner)
 	ShowScannablesInLevel(true);
 }
 
-bool CWeaponScanvisor::Holster(CBaseCombatWeapon *pSwitchingTo)
-{
-
-}
+//bool CWeaponScanvisor::Holster(CBaseCombatWeapon *pSwitchingTo)
+//{
+//
+//}
 
 void CWeaponScanvisor::ShowScannablesInLevel(bool show)
 {
@@ -126,7 +129,7 @@ void CWeaponScanvisor::ShowScannablesInLevel(bool show)
 	while (pEnt)
 	{
 		Msg("found ent with classname %s, entity name %s\n", pEnt->GetClassname(), pEnt->GetEntityName());
-
+		
 		pEnt = gEntList.FindEntityByClassname(pEnt, "scannable_*");
 	}
 }

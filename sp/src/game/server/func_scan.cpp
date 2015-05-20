@@ -23,7 +23,7 @@ void CScannable::UpdateScanTime(float scantime, CBasePlayer *pPlayer, CBaseEntit
 
 	if (m_bScanned)
 	{
-		ShowScanInfo(pPlayer, pBase);
+		SendShowScanInfo(pPlayer, pBase);
 	}
 	else
 	{
@@ -45,9 +45,11 @@ void CScannable::UpdateScanTime(float scantime, CBasePlayer *pPlayer, CBaseEntit
 	}
 }
 
-void CScannable::ShowScanInfo(CBasePlayer *pPlayer, CBaseEntity *pBase)
+/*
+Sends the ShowScanInfo UserMessage with the appropriate string token to the HUD.
+*/
+void CScannable::SendShowScanInfo(CBasePlayer *pPlayer, CBaseEntity *pBase)
 {
-	//dispatch message to hud.
 	CSingleUserRecipientFilter user(pPlayer);
 	user.MakeReliable();
 

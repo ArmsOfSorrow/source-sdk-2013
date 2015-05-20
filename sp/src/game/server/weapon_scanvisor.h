@@ -24,7 +24,7 @@ public:
 	virtual void Activate() override;
 	//void DryFire(); //if object is out of range. not the best name, though.
 	virtual void Equip(CBaseCombatCharacter *pOwner) override;
-	virtual bool Holster(CBaseCombatWeapon *pSwitchingTo) override;
+	//virtual bool Holster(CBaseCombatWeapon *pSwitchingTo) override;
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
