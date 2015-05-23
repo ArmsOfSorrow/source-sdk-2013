@@ -23,14 +23,15 @@ public:
 	virtual void ItemPreFrame() override;
 	virtual void Activate() override;
 	//void DryFire(); //if object is out of range. not the best name, though.
-	virtual void Equip(CBaseCombatCharacter *pOwner) override;
-	//virtual bool Holster(CBaseCombatWeapon *pSwitchingTo) override;
+	virtual bool Holster(CBaseCombatWeapon *pSwitchingTo) override;
+	virtual bool Deploy() override;
 
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();
 
 private:
 	bool m_bIsCurrentlyScanning;
+	bool m_bShowingScannables;
 	float m_flScanTime;
 	int m_nOldButtonState;
 

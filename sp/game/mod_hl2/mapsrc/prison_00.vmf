@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "6412"
-	"mapversion" "106"
+	"mapversion" "112"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -20,7 +20,7 @@ viewsettings
 world
 {
 	"id" "1"
-	"mapversion" "106"
+	"mapversion" "112"
 	"classname" "worldspawn"
 	"detailmaterial" "detail/detailsprites"
 	"detailvbsp" "detail.vbsp"
@@ -10204,6 +10204,7 @@ entity
 	"skin" "0"
 	"solid" "6"
 	"spawnflags" "0"
+	"spritepath" "sprites/blueglow2.vmt"
 	"StartDisabled" "0"
 	"targetname" "scannable"
 	"origin" "-206.883 -1263.87 73"
@@ -12276,26 +12277,6 @@ entity
 }
 entity
 {
-	"id" "13642"
-	"classname" "env_sprite"
-	"framerate" "10.0"
-	"GlowProxySize" "2.0"
-	"HDRColorScale" "1.0"
-	"model" "sprites/combineball_glow_blue_1.vmt"
-	"renderamt" "255"
-	"rendercolor" "255 255 255"
-	"rendermode" "9"
-	"origin" "-208 -1264 88"
-	editor
-	{
-		"color" "20 140 20"
-		"visgroupshown" "1"
-		"visgroupautoshown" "1"
-		"logicalpos" "[0 0]"
-	}
-}
-entity
-{
 	"id" "13785"
 	"classname" "scannable_prop_dynamic"
 	"angles" "0 0 0"
@@ -12326,32 +12307,13 @@ entity
 	"skin" "0"
 	"solid" "6"
 	"spawnflags" "0"
+	"spritepath" "sprites/blueglow2.vmt"
 	"StartDisabled" "0"
 	"targetname" "rock"
 	"origin" "-86.7005 -1161.44 61"
 	editor
 	{
 		"color" "220 30 220"
-		"visgroupshown" "1"
-		"visgroupautoshown" "1"
-		"logicalpos" "[0 0]"
-	}
-}
-entity
-{
-	"id" "13796"
-	"classname" "env_sprite"
-	"framerate" "10.0"
-	"GlowProxySize" "2.0"
-	"HDRColorScale" "1.0"
-	"model" "sprites/combineball_glow_blue_1.vmt"
-	"renderamt" "255"
-	"rendercolor" "255 255 255"
-	"rendermode" "9"
-	"origin" "-88 -1160 64"
-	editor
-	{
-		"color" "20 140 20"
 		"visgroupshown" "1"
 		"visgroupautoshown" "1"
 		"logicalpos" "[0 0]"

@@ -12,9 +12,9 @@ public:
 	DECLARE_DATADESC();
 	CScannableDynamicProp();
 	~CScannableDynamicProp();
-	void Spawn();
-	//void InputShowScanInfo(inputdata_t &inputdata);
-	//unneeded, since
+	//virtual void Spawn() override;
+	virtual void Activate() override;
+
 
 private:
 };

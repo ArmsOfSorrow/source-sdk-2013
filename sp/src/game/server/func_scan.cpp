@@ -1,14 +1,6 @@
 #include "cbase.h"
 #include "func_scan.h"
 
-CScannable::CScannable()
-{
-}
-
-CScannable::~CScannable()
-{
-}
-
 bool CScannable::IsKnown()
 {
 	return m_bScanned;
@@ -58,4 +50,33 @@ void CScannable::SendShowScanInfo(CBasePlayer *pPlayer, CBaseEntity *pBase)
 	MessageEnd();
 
 	m_OnScanCompleted.FireOutput(pPlayer, pBase);
+}
+
+/*
+Initializes the sprite that's shown in scan mode and sets its position
+and movement parent.
+*/
+void CScannable::InitScannableSprite(CBaseEntity *pParent, Vector origin, bool animate)
+{
+	//TODO: look at env_sun to see if it precaches its sprites
+	if (!m_hSprite)
+	{
+		m_hSprite = CSprite::SpriteCreate(m_szSpritePath.ToCStr(), pParent->GetAbsOrigin(), false);
+		m_hSprite->SetParent(pParent);
+
+		//spawn deactivated, scan visor will take care of the rest
+		m_hSprite->TurnOff();
+	}
+}
+
+void CScannable::SetSpriteVisibility(bool visible)
+{
+	if (visible)
+	{
+		m_hSprite->TurnOn();
+	}
+	else
+	{
+		m_hSprite->TurnOff();
+	}
 }

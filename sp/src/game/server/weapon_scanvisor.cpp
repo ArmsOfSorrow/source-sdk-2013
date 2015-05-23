@@ -10,6 +10,7 @@
 CWeaponScanvisor::CWeaponScanvisor()
 {
 	m_bIsCurrentlyScanning = false;
+	m_bShowingScannables = false;
 	m_nOldButtonState = 0;
 }
 
@@ -22,6 +23,7 @@ void CWeaponScanvisor::Activate()
 	{
 		//if the player owns us from the start and we're actively carried
 		ShowScannablesInLevel(true);
+		m_bShowingScannables = true;
 	}
 }
 
@@ -41,10 +43,11 @@ void CWeaponScanvisor::PrimaryAttack()
 	}
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: Fires a trace forward to check if there is an object in 
-//			front of the player and sets the target member of this class.
-//-----------------------------------------------------------------------------
+
+/*
+Fires a trace forward to check if there is an object in 
+front of the player and sets the target member of this class.
+*/
 void CWeaponScanvisor::AcquireTarget(CBasePlayer *pPlayer)
 {
 	if (m_pTarget)
@@ -101,36 +104,44 @@ void CWeaponScanvisor::ItemPreFrame()
 	BaseClass::ItemPreFrame(); //should this be done before our stuff or after?
 }
 
-void CWeaponScanvisor::Equip(CBaseCombatCharacter *pOwner)
+bool CWeaponScanvisor::Holster(CBaseCombatWeapon *pSwitchingTo)
 {
-	BaseClass::Equip(pOwner);
-	ShowScannablesInLevel(true);
+	ShowScannablesInLevel(false);
+	return BaseClass::Holster(pSwitchingTo);
 }
 
-//bool CWeaponScanvisor::Holster(CBaseCombatWeapon *pSwitchingTo)
-//{
-//
-//}
+bool CWeaponScanvisor::Deploy()
+{
+	ShowScannablesInLevel(true);
+	return BaseClass::Deploy();
+}
 
+/*
+Finds scannable entities in the global entity list and sets their state
+according to the passed parameter value.
+*/
 void CWeaponScanvisor::ShowScannablesInLevel(bool show)
 {
+	/* when defining new scannable entities, make sure they begin with "scannable_", otherwise
+	we won't be able to find them */
 	CBaseEntity *pEnt = gEntList.FindEntityByClassname(nullptr, "scannable_*");
-	
-	if (show)
-	{
-		//set functor for activating objects
-	}
-	else
-	{
-		//set functor for deactivting objects
-	}
+	CScannable *pScan;
 
-	//use functor in this block
+	/* TODO: this might become a performance problem when there are lots of
+	   scannables in the level. try to limit this to the PVS. */
 	while (pEnt)
 	{
-		Msg("found ent with classname %s, entity name %s\n", pEnt->GetClassname(), pEnt->GetEntityName());
+		Msg("found ent with classname %s, entity name %s, setting state to %d\n", pEnt->GetClassname(), pEnt->GetEntityName(), show);
 		
+		pScan = dynamic_cast<CScannable*>(pEnt);
+		if (pScan)
+		{
+			pScan->SetSpriteVisibility(show);
+			//TODO: set alpha on models
+		}
+
 		pEnt = gEntList.FindEntityByClassname(pEnt, "scannable_*");
+
 	}
 }
 

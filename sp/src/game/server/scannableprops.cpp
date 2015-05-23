@@ -3,7 +3,8 @@
 #include "func_scan.h"
 
 
-CScannableDynamicProp::CScannableDynamicProp()
+CScannableDynamicProp::CScannableDynamicProp() 
+	: CScannable()
 {
 }
 
@@ -11,18 +12,21 @@ CScannableDynamicProp::~CScannableDynamicProp()
 {
 }
 
-void CScannableDynamicProp::Spawn()
+//void CScannableDynamicProp::Spawn()
+//{
+//	Msg(m_szSpritePath.ToCStr());
+//}
+
+void CScannableDynamicProp::Activate()
 {
-	BaseClass::Spawn();
+	BaseClass::Activate();
+
+	InitScannableSprite(GetBaseEntity(), GetAbsOrigin(), false);
 }
 
-//void CScannableDynamicProp::InputShowScanInfo(inputdata_t &inputdata)
-//{
-//}
 
 BEGIN_DATADESC(CScannableDynamicProp)
 
-//DEFINE_INPUTFUNC(FIELD_VOID, "ShowScanInfo", InputShowScanInfo),
 DEFINE_SCANNABLE_DATADESC()
 
 END_DATADESC()
