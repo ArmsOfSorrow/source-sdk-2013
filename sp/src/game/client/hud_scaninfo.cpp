@@ -23,7 +23,8 @@ public:
 	CHudScanInfo(const char *pElementName);
 	~CHudScanInfo();
 	virtual void Init();
-	virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
+	//virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
+	virtual void ApplySettings(KeyValues* inResourceData) override;
 	virtual bool ShouldDraw();
 	virtual void Paint();
 	virtual void ProcessInput();
@@ -62,9 +63,8 @@ CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName)
 	m_bShouldDraw = false;
 	m_bOldDrawState = false;
 
+	m_pScanTextLabel = new vgui::RichText(this, "ScanTextLabel");
 	LoadControlSettings("resource/scaninfo.res");
-	m_pScanTextLabel = FindControl<vgui::RichText>("ScanTextLabel", true);
-	m_pScanTextLabel->SetKeyBoardInputEnabled(true);
 }
 
 CHudScanInfo::~CHudScanInfo()
@@ -79,6 +79,16 @@ CHudScanInfo::~CHudScanInfo()
 void CHudScanInfo::Init()
 {
 	HOOK_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);
+}
+
+void CHudScanInfo::ApplySettings(KeyValues* inResourceData)
+{
+	CKeyValuesDumpContextAsDevMsg ctx(1);
+	inResourceData->Dump(&ctx);
+
+	LoadControlSettings("resource/scaninfo.res");
+	
+	BaseClass::ApplySettings(inResourceData);
 }
 
 void CHudScanInfo::ProcessInput()
@@ -112,18 +122,19 @@ void CHudScanInfo::ProcessInput()
 
 }
 
-void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
-{
-	BaseClass::ApplySchemeSettings(pScheme);
-
-	int x, y, wide, tall; //tall (from hud size) is not used in resizing
-	GetPos(x, y);
-	GetHudSize(wide, tall);
-
-	SetBounds(x, y, wide-2*x, GetTall());
-	m_pScanTextLabel->SetFont(pScheme->GetFont("DebugFixed"));
-	
-}
+//void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
+//{
+//	
+//	BaseClass::ApplySchemeSettings(pScheme);
+//	LoadControlSettings("resource/scaninfo.res");
+//	//int x, y, wide, tall; //tall (from hud size) is not used in resizing
+//	//GetPos(x, y);
+//	//GetHudSize(wide, tall);
+//
+//	//SetBounds(x, y, wide-2*x, GetTall());
+//	//m_pScanTextLabel->SetFont(pScheme->GetFont("DebugFixed"));
+//	
+//}
 
 bool CHudScanInfo::ShouldDraw()
 {

@@ -35,20 +35,6 @@
 		"digit_ypos" "-1"
 	}
 	
-	HudScanInfo [$WIN32]
-	{
-		"fieldName"		"HudScanInfo"
-		"xpos"	"20"
-		"ypos"	"320"
-		"wide"	"600"
-		"tall"	"100"
-		"visible" "1"
-		"enabled" "1"
-		"text_xpos" "0"
-		"text_ypos" "0"
-		"TextFont" "DebugFixed"
-	}
-	
 	HudSuit [$WIN32]
 	{
 		"fieldName"		"HudSuit"
@@ -709,5 +695,25 @@
 		"enabled"		"1"
 		"bgcolor_override"	"0 0 0 0"
 		"PaintBackgroundType"	"0" // rounded corners
-	}	
+	}
+	
+	HudScanInfo
+	{
+		"fieldName" "HudScanInfo"
+		"visible"	"1"
+		"enabled"	"1"
+		"xpos"		"c-300"
+		"ypos"		"350"
+		"wide"		"600"
+		"tall"		"120"
+
+		"BgAlpha"	"128"
+
+		//"GrowTime"		"0.25"
+		//"ItemHiddenTime"	"0.2"  // Nearly same as grow time so that the item doesn't start to show until growth is finished
+		//"ItemFadeInTime"	"0.15"	// Once ItemHiddenTime is finished, takes this much longer to fade in
+		//"ItemFadeOutTime"	"0.3"
+		//"topoffset"		"0"		[$WIN32]
+		//"topoffset"		"0"	[$X360]
+	}
 }
