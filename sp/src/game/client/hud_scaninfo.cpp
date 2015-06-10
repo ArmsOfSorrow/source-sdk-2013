@@ -23,12 +23,12 @@ public:
 	CHudScanInfo(const char *pElementName);
 	~CHudScanInfo();
 	virtual void Init();
-	//virtual void ApplySchemeSettings(vgui::IScheme *pScheme);
+	virtual void ApplySchemeSettings(vgui::IScheme *pScheme) override;
 	virtual void ApplySettings(KeyValues* inResourceData) override;
-	virtual bool ShouldDraw();
-	virtual void Paint();
-	virtual void ProcessInput();
-	virtual void OnThink();
+	virtual bool ShouldDraw() override;
+	virtual void Paint() override;
+	virtual void ProcessInput() override;
+	virtual void OnThink() override;
 	void MsgFunc_ShowScanInfo(bf_read &msg);
 	
 
@@ -52,9 +52,15 @@ private:
 DECLARE_HUDELEMENT(CHudScanInfo);
 DECLARE_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);
 
-CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName), BaseClass(nullptr, "HudScanInfo")
+CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName), BaseClass(/*sp->Get()*/nullptr, "HudScanInfo")
 {
-	vgui::Panel *pParent = g_pClientMode->GetViewport();
+	//parent it to scaninfopanel instead of viewport
+	vgui::Panel *pParent = sp->Get()/*g_pClientMode->GetViewport()*/;
+
+	int wide, tall;
+	pParent->GetSize(wide, tall);
+	DevMsg("scaninfopanel width: %d, height: %d\n", wide, tall);
+
 	SetParent(pParent);
 
 	m_nOldButtonState = 0;
@@ -62,9 +68,12 @@ CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName)
 	m_bScanCompleted = false;
 	m_bShouldDraw = false;
 	m_bOldDrawState = false;
-
-	m_pScanTextLabel = new vgui::RichText(this, "ScanTextLabel");
-	LoadControlSettings("resource/scaninfo.res");
+	
+	//this does not load font and other settings because richtext does not support it.
+	//either change ApplySettings in richtext.cpp or write stuff into HudScanInfo.res, as those
+	//keyvalues are available in ApplySettings
+	LoadControlSettings("resource/scaninfo.res"); 
+	m_pScanTextLabel = FindControl<vgui::RichText>("ScanTextLabel");
 }
 
 CHudScanInfo::~CHudScanInfo()
@@ -78,17 +87,54 @@ CHudScanInfo::~CHudScanInfo()
 
 void CHudScanInfo::Init()
 {
-	HOOK_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);
+	HOOK_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);	
+
+	DevMsg("CHudScanInfo width: %d, height: %d\n", GetWide(), GetTall());
 }
 
 void CHudScanInfo::ApplySettings(KeyValues* inResourceData)
 {
+	BaseClass::ApplySettings(inResourceData);
+
 	CKeyValuesDumpContextAsDevMsg ctx(1);
 	inResourceData->Dump(&ctx);
 
-	LoadControlSettings("resource/scaninfo.res");
+	//LoadControlSettings("resource/scaninfo.res");
 	
-	BaseClass::ApplySettings(inResourceData);
+	KeyValues *pFontKey = inResourceData->FindKey("font");
+	if (pFontKey)
+	{
+		//m_pScanTextLabel->SetFont(pFontKey->GetString());
+		DevMsg("found font key\n");
+	}
+	
+
+	//m_pScanTextLabel->SetBgColor();
+	
+	
+	/* man, this is a real pain in the ass. plan for next time:
+	   1. find a way to override scrollbar colors within richtext control
+	   
+	   this could come in handy: https://developer.valvesoftware.com/wiki/Understanding_VGUI2_Resource_Files
+	   */
+
+	/* Next time:
+	1. find a way to make the panel show up back again
+	
+	*/
+}
+
+void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
+{
+	BaseClass::ApplySchemeSettings(pScheme);
+	
+	/* ugly solution, but fucking around with non-funtional resource files 
+	   isn't much fun either */
+	vgui::HFont font = pScheme->GetFont("CloseCaption_Small");
+	m_pScanTextLabel->SetFont(font);
+	
+	//Color bgColor = pScheme->GetColor("BgColor", Color(0,0,0,76));
+	//m_pScanTextLabel->SetBgColor(bgColor);
 }
 
 void CHudScanInfo::ProcessInput()
@@ -113,9 +159,9 @@ void CHudScanInfo::ProcessInput()
 		//TODO: find the right scroll amount
 		//there are no input bits for the mouse wheel. weapon selection does its work with a usercmd, but we will
 		//need weapon selection (most likely), so we need to find another way to make this
-		if (gHUD.m_iKeyBits & IN_ATTACK2)
+		if (gHUD.m_iKeyBits & IN_ATTACK2 && !(m_nOldButtonState & IN_ATTACK2))
 		{
-			KeyValues* kv = new KeyValues("MoveScrollBar", "delta", -20);
+			KeyValues* kv = new KeyValues("MoveScrollBarDirect", "delta", -2);
 			this->PostMessage(m_pScanTextLabel, kv);
 		}
 	}
@@ -168,7 +214,6 @@ void CHudScanInfo::Paint()
 	g_pMatSystemSurface->DrawSetTextColor(255,255,255, m_flTextAlphaOverride);
 
 	m_pScanTextLabel->SetAlpha(m_flTextAlphaOverride);
-	//Msg("Focus: %d ", m_pScanTextLabel->HasFocus());
 }
 
 void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
@@ -179,7 +224,6 @@ void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
 		msg.ReadString(m_szToken, sizeof(m_szToken));
 		m_bScanCompleted = true; //this is set when receiving the HUD message and unset in ShouldDraw...actually does the same as m_bShouldDraw, doesn't it?
 		m_pScanTextLabel->SetText(m_szToken);
-		//m_pScanTextLabel->InsertString(m_szToken);
 	}
 }
 

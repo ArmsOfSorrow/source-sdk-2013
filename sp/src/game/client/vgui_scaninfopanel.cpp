@@ -1,24 +1,31 @@
 #include "cbase.h"
 #include "iscaninfopanel.h"
-#include <vgui_controls\Panel.h>
+#include <vgui_controls\EditablePanel.h>
 #include <vgui\IVGui.h>
 #include "VGuiMatSurface/IMatSystemSurface.h"
 #include <vgui_controls/Controls.h>
 #include <vgui/ISurface.h>
 #include <vgui/IScheme.h>
 #include <vgui/IPanel.h>
+#include "hud_macros.h"
 
-class CScanInfoPanel : public vgui::Panel
+class CScanInfoPanel : public vgui::EditablePanel
 {
-	DECLARE_CLASS_SIMPLE(CScanInfoPanel, vgui::Panel);
+	DECLARE_CLASS_SIMPLE(CScanInfoPanel, vgui::EditablePanel);
 
 public:
 	CScanInfoPanel(vgui::VPANEL parent);
 	~CScanInfoPanel();
 
+	virtual void Init(int x, int y, int wide, int tall) override;
 	virtual void OnTick();
-	virtual void OnCommand(const char *pszCommand);
+	//virtual void OnCommand(const char *pszCommand);
 	//virtual bool ShouldDraw();
+
+private:
+	//MESSAGE_FUNC(OnShowScanInfo, "ShowScanInfo");
+	
+	void __MsgFunc_ShowScanInfo();
 };
 
 CScanInfoPanel::CScanInfoPanel(vgui::VPANEL parent) : BaseClass(NULL, "ScanInfoPanel")
@@ -36,6 +43,11 @@ CScanInfoPanel::CScanInfoPanel(vgui::VPANEL parent) : BaseClass(NULL, "ScanInfoP
 	DevMsg("scaninfopanel has been constructed.\n");
 }
 
+void CScanInfoPanel::Init(int x, int y, int wide, int tall)
+{
+	BaseClass::Init(x, y, wide, tall);
+}
+
 CScanInfoPanel::~CScanInfoPanel()
 {
 
@@ -46,7 +58,7 @@ void CScanInfoPanel::OnTick()
 
 }
 
-void CScanInfoPanel::OnCommand(const char *pszCommand)
+void CScanInfoPanel::__MsgFunc_ShowScanInfo()
 {
 
 }
@@ -62,7 +74,7 @@ public:
 		pScanInfoPanel = nullptr;
 	}
 
-	vgui::Panel *Get()
+	vgui::EditablePanel *Get()
 	{
 		if (pScanInfoPanel)
 		{

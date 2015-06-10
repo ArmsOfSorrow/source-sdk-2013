@@ -30,6 +30,21 @@ Scheme
 		"Panel.FgColor"			"255 220 0 100"
 		"Panel.BgColor"			"0 0 0 76"
 		
+		//when clientscheme is loaded, richtext overrides
+		//its correct values since it doesn't find the key
+		"RichText.TextColor"			"255 220 0 100"
+		"RichText.BgColor"				"0 0 0 76"
+		
+		ScrollBarButton.FgColor				"Blank"
+		ScrollBarButton.BgColor				"Blank"
+		ScrollBarButton.ArmedFgColor		"Blank"
+		ScrollBarButton.ArmedBgColor		"Blank"
+		ScrollBarButton.DepressedFgColor	"Blank"
+		ScrollBarButton.DepressedBgColor	"Blank"
+
+		ScrollBarSlider.FgColor				"Blank"
+		ScrollBarSlider.BgColor				"255 255 255 64"
+		
 		"BrightFg"		"255 220 0 255"
 
 		"DamagedBg"			"180 0 0 200"
@@ -88,6 +103,17 @@ Scheme
 	{
 		// fonts are used in order that they are listed
 		// fonts are used in order that they are listed
+		"ScanInfo"
+		{
+			"1"
+			{
+				"name"		"Courier New"
+				"tall"		"20"
+				"weight"	"400"
+				"antialias"	"1"
+			}
+		}
+		
 		"DebugFixed"
 		{
 			"1"

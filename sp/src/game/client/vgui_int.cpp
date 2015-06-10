@@ -202,7 +202,7 @@ void VGui_CreateGlobalPanels( void )
 {
 	VPANEL gameToolParent = enginevgui->GetPanel( PANEL_CLIENTDLL_TOOLS );
 	VPANEL toolParent = enginevgui->GetPanel( PANEL_TOOLS );
-	VPANEL ingameParent = enginevgui->GetPanel(PANEL_INGAMESCREENS);
+	
 #if defined( TRACK_BLOCKING_IO )
 	VPANEL gameDLLPanel = enginevgui->GetPanel( PANEL_GAMEDLL );
 #endif
@@ -227,8 +227,7 @@ void VGui_CreateGlobalPanels( void )
 	g_pSixenseInput->CreateGUI( gameToolParent );
 #endif
 
-	//create scaninfopanel
-	sp->Create(ingameParent);
+
 }
 
 void VGui_Shutdown()

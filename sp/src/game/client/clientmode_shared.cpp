@@ -14,6 +14,7 @@
 #include "view_shared.h"
 #include "iviewrender.h"
 #include "hud_basechat.h"
+#include "iscaninfopanel.h"
 #include "weapon_selection.h"
 #include <vgui/IVGui.h>
 #include <vgui/Cursor.h>
@@ -329,6 +330,7 @@ void ClientModeShared::Init()
 	// Derived ClientMode class must make sure m_Viewport is instantiated
 	Assert( m_pViewport );
 	m_pViewport->LoadControlSettings( "scripts/HudLayout.res", NULL, NULL, pConditions );
+	sp->Get()->LoadControlSettings("scripts/HudLayout.res", NULL, NULL, pConditions);
 
 #if defined( REPLAY_ENABLED )
  	m_pReplayReminderPanel = GET_HUDELEMENT( CReplayReminderPanel );
@@ -371,6 +373,10 @@ void ClientModeShared::Init()
 
 void ClientModeShared::InitViewport()
 {
+	//create scaninfopanel. this is here because HUD is initialized before global panels,
+	//but we need to parent a HUD element to this panel.
+	VPANEL ingameParent = enginevgui->GetPanel(PANEL_INGAMESCREENS);
+	sp->Create(ingameParent);
 }
 
 

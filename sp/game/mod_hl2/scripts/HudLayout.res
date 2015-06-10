@@ -707,7 +707,7 @@
 		"wide"		"600"
 		"tall"		"120"
 
-		"BgAlpha"	"128"
+		"font"	"AchievementNotification"
 
 		//"GrowTime"		"0.25"
 		//"ItemHiddenTime"	"0.2"  // Nearly same as grow time so that the item doesn't start to show until growth is finished
