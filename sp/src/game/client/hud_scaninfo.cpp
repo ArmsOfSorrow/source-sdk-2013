@@ -36,32 +36,33 @@ private:
 
 	int m_nOldButtonState;
 	float m_flLastInputTime;
-	const float m_flFadeThreshold = 0.5f;
+	const float m_flFadeThreshold = 0.1f;
 	bool m_bScanCompleted;
 	bool m_bShouldDraw;
 	bool m_bOldDrawState;
 	char m_szToken[128];
 	vgui::RichText *m_pScanTextLabel;
 	
-	CPanelAnimationVar(vgui::HFont, m_hTextFont, "TextFont", "HudSelectionText");
-	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "0");
-	CPanelAnimationVar(float, m_flTextAlphaOverride, "TextAlpha", "0");
+	//CPanelAnimationVar(vgui::HFont, m_hTextFont, "TextFont", "HudSelectionText");
+	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "255");
+	CPanelAnimationVar(float, m_flTextAlphaOverride, "TextAlpha", "255");
 	
 };
 
 DECLARE_HUDELEMENT(CHudScanInfo);
 DECLARE_HUD_MESSAGE(CHudScanInfo, ShowScanInfo);
 
-CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName), BaseClass(/*sp->Get()*/nullptr, "HudScanInfo")
+CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName), BaseClass(nullptr, "HudScanInfo")
 {
 	//parent it to scaninfopanel instead of viewport
-	vgui::Panel *pParent = sp->Get()/*g_pClientMode->GetViewport()*/;
+	vgui::Panel *pParent = sp->Get();
 
 	int wide, tall;
 	pParent->GetSize(wide, tall);
 	DevMsg("scaninfopanel width: %d, height: %d\n", wide, tall);
 
 	SetParent(pParent);
+	SetFgColor(Color(0, 0, 0, 255));
 
 	m_nOldButtonState = 0;
 	m_flLastInputTime = 0.0f;
@@ -74,6 +75,10 @@ CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName)
 	//keyvalues are available in ApplySettings
 	LoadControlSettings("resource/scaninfo.res"); 
 	m_pScanTextLabel = FindControl<vgui::RichText>("ScanTextLabel");
+	if (m_pScanTextLabel)
+	{
+		m_pScanTextLabel->SetProportional(true);
+	}
 }
 
 CHudScanInfo::~CHudScanInfo()
@@ -117,11 +122,6 @@ void CHudScanInfo::ApplySettings(KeyValues* inResourceData)
 	   
 	   this could come in handy: https://developer.valvesoftware.com/wiki/Understanding_VGUI2_Resource_Files
 	   */
-
-	/* Next time:
-	1. find a way to make the panel show up back again
-	
-	*/
 }
 
 void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
@@ -130,8 +130,11 @@ void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
 	
 	/* ugly solution, but fucking around with non-funtional resource files 
 	   isn't much fun either */
-	vgui::HFont font = pScheme->GetFont("CloseCaption_Small");
-	m_pScanTextLabel->SetFont(font);
+	vgui::HFont font = pScheme->GetFont("DebugFixed");
+	if (font)
+	{
+		m_pScanTextLabel->SetFont(font);
+	}
 	
 	//Color bgColor = pScheme->GetColor("BgColor", Color(0,0,0,76));
 	//m_pScanTextLabel->SetBgColor(bgColor);
@@ -202,7 +205,10 @@ bool CHudScanInfo::ShouldDraw()
 		}
 	}
 	
-	return m_bShouldDraw || (gpGlobals->curtime - m_flLastInputTime) < m_flFadeThreshold;
+	
+	//if we don't have a scanned entity, draw it until it fades out
+	m_bShouldDraw = m_bShouldDraw || (gpGlobals->curtime - m_flLastInputTime) < m_flFadeThreshold;
+	return m_bShouldDraw;
 }
 
 void CHudScanInfo::Paint()
@@ -210,7 +216,7 @@ void CHudScanInfo::Paint()
 	//maybe check for player state/entity flags to not draw the HUD under special circumstances
 	
 	SetAlpha(m_flAlphaOverride);
-	g_pMatSystemSurface->DrawSetTextFont(m_hTextFont);
+	//g_pMatSystemSurface->DrawSetTextFont(m_hTextFont);
 	g_pMatSystemSurface->DrawSetTextColor(255,255,255, m_flTextAlphaOverride);
 
 	m_pScanTextLabel->SetAlpha(m_flTextAlphaOverride);
@@ -222,7 +228,7 @@ void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
 	if (!IsVisible())
 	{
 		msg.ReadString(m_szToken, sizeof(m_szToken));
-		m_bScanCompleted = true; //this is set when receiving the HUD message and unset in ShouldDraw...actually does the same as m_bShouldDraw, doesn't it?
+		m_bScanCompleted = true;
 		m_pScanTextLabel->SetText(m_szToken);
 	}
 }
@@ -240,9 +246,17 @@ void CHudScanInfo::OnThink()
 	{
 		if (m_bOldDrawState == false && m_bScanCompleted)
 		{
+			//we cannot trust that ShouldDraw will run before the next OnThink call.
+			//(maybe calling ShouldDraw in that condition above would be less ugly)
+			m_bOldDrawState = true;
+
 			//fade in, as we were not drawing in the last frame
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("OpenScanInfo");
+			//sp->GetAnimationController()->StartAnimationSequence("OpenScanInfo");
+			//g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("OpenScanInfo");
+			//vgui::GetAnimationController()->StartAnimationSequence("OpenScanInfo");
+			engine->ClientCmd("pause");
 		}
+
 		m_flLastInputTime = gpGlobals->curtime;
 	}
 	else
@@ -250,7 +264,8 @@ void CHudScanInfo::OnThink()
 		if (m_nOldButtonState & IN_ATTACK)
 		{
 			//start fading out here.
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("FadeOutScanInfo");
+			//sp->GetAnimationController()->StartAnimationSequence("FadeOutScanInfo");
+			engine->ClientCmd("pause");
 		}
 	}
 	m_nOldButtonState = gHUD.m_iKeyBits;

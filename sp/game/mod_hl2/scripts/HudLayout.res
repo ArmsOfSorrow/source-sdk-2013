@@ -704,7 +704,7 @@
 		"enabled"	"1"
 		"xpos"		"c-300"
 		"ypos"		"350"
-		"wide"		"600"
+		"wide"		"800"
 		"tall"		"120"
 
 		"font"	"AchievementNotification"
