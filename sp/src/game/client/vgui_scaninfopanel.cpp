@@ -69,7 +69,7 @@ CScanInfoPanel::~CScanInfoPanel()
 
 void CScanInfoPanel::OnThink()
 {
-	m_pAnimController->UpdateAnimations(gpGlobals->curtime);
+	m_pAnimController->UpdateAnimations(engine->Time());
 }
 
 

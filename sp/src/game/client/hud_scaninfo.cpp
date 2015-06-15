@@ -22,7 +22,7 @@ public:
 
 	CHudScanInfo(const char *pElementName);
 	~CHudScanInfo();
-	virtual void Init();
+	virtual void Init() override;
 	virtual void ApplySchemeSettings(vgui::IScheme *pScheme) override;
 	virtual void ApplySettings(KeyValues* inResourceData) override;
 	virtual bool ShouldDraw() override;
@@ -36,16 +36,15 @@ private:
 
 	int m_nOldButtonState;
 	float m_flLastInputTime;
-	const float m_flFadeThreshold = 0.1f;
+	const float m_flFadeThreshold = 0.5f;
 	bool m_bScanCompleted;
 	bool m_bShouldDraw;
 	bool m_bOldDrawState;
 	char m_szToken[128];
 	vgui::RichText *m_pScanTextLabel;
 	
-	//CPanelAnimationVar(vgui::HFont, m_hTextFont, "TextFont", "HudSelectionText");
-	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "255");
-	CPanelAnimationVar(float, m_flTextAlphaOverride, "TextAlpha", "255");
+	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "0");
+	CPanelAnimationVar(float, m_flTextAlphaOverride, "TextAlpha", "0");
 	
 };
 
@@ -106,12 +105,12 @@ void CHudScanInfo::ApplySettings(KeyValues* inResourceData)
 
 	//LoadControlSettings("resource/scaninfo.res");
 	
-	KeyValues *pFontKey = inResourceData->FindKey("font");
-	if (pFontKey)
-	{
-		//m_pScanTextLabel->SetFont(pFontKey->GetString());
-		DevMsg("found font key\n");
-	}
+	//KeyValues *pFontKey = inResourceData->FindKey("font");
+	//if (pFontKey)
+	//{
+	//	//m_pScanTextLabel->SetFont(pFontKey->GetString());
+	//	DevMsg("found font key\n");
+	//}
 	
 
 	//m_pScanTextLabel->SetBgColor();
@@ -162,7 +161,7 @@ void CHudScanInfo::ProcessInput()
 		//TODO: find the right scroll amount
 		//there are no input bits for the mouse wheel. weapon selection does its work with a usercmd, but we will
 		//need weapon selection (most likely), so we need to find another way to make this
-		if (gHUD.m_iKeyBits & IN_ATTACK2 && !(m_nOldButtonState & IN_ATTACK2))
+		if ((gHUD.m_iKeyBits & IN_ATTACK2) && !(m_nOldButtonState & IN_ATTACK2))
 		{
 			KeyValues* kv = new KeyValues("MoveScrollBarDirect", "delta", -2);
 			this->PostMessage(m_pScanTextLabel, kv);
@@ -216,7 +215,6 @@ void CHudScanInfo::Paint()
 	//maybe check for player state/entity flags to not draw the HUD under special circumstances
 	
 	SetAlpha(m_flAlphaOverride);
-	//g_pMatSystemSurface->DrawSetTextFont(m_hTextFont);
 	g_pMatSystemSurface->DrawSetTextColor(255,255,255, m_flTextAlphaOverride);
 
 	m_pScanTextLabel->SetAlpha(m_flTextAlphaOverride);
@@ -230,6 +228,7 @@ void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
 		msg.ReadString(m_szToken, sizeof(m_szToken));
 		m_bScanCompleted = true;
 		m_pScanTextLabel->SetText(m_szToken);
+		//m_pScanTextLabel->GotoTextStart();
 	}
 }
 
@@ -251,9 +250,7 @@ void CHudScanInfo::OnThink()
 			m_bOldDrawState = true;
 
 			//fade in, as we were not drawing in the last frame
-			//sp->GetAnimationController()->StartAnimationSequence("OpenScanInfo");
-			//g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("OpenScanInfo");
-			//vgui::GetAnimationController()->StartAnimationSequence("OpenScanInfo");
+			sp->GetAnimationController()->StartAnimationSequence("OpenScanInfo");
 			engine->ClientCmd("pause");
 		}
 
@@ -264,7 +261,7 @@ void CHudScanInfo::OnThink()
 		if (m_nOldButtonState & IN_ATTACK)
 		{
 			//start fading out here.
-			//sp->GetAnimationController()->StartAnimationSequence("FadeOutScanInfo");
+			sp->GetAnimationController()->StartAnimationSequence("FadeOutScanInfo");
 			engine->ClientCmd("pause");
 		}
 	}
