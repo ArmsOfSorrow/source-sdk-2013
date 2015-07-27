@@ -22,7 +22,8 @@ public:
 	
 
 protected:
-	bool m_bScanned; //this state should be persistent. once scanned, always in your database.
+	bool m_bScanComplete; //this state should be persistent. once scanned, always in your database.
+	bool m_bMessageSent;
 	CHandle<CSprite> m_hSprite;
 	void SendShowScanInfo(CBasePlayer *pPlayer, CBaseEntity *pBase);
 	void InitScannableSprite(CBaseEntity *pParent, Vector origin, bool animate);
@@ -34,7 +35,7 @@ private:
 //additional DATADESC fields for scannables
 #define DEFINE_SCANNABLE_DATADESC() \
 	\
-DEFINE_FIELD(m_bScanned, FIELD_BOOLEAN), \
+DEFINE_FIELD(m_bScanComplete, FIELD_BOOLEAN), \
 DEFINE_KEYFIELD(m_flRequiredScanTime, FIELD_FLOAT, "scantime"), \
 DEFINE_KEYFIELD(m_szScanInfo, FIELD_STRING, "scaninfo"), \
 DEFINE_KEYFIELD(m_szSpritePath, FIELD_STRING, "spritepath"), \

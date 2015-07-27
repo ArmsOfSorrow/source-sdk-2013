@@ -3,7 +3,7 @@
 
 bool CScannable::IsKnown()
 {
-	return m_bScanned;
+	return m_bScanComplete;
 }
 
 void CScannable::UpdateScanTime(float scantime, CBasePlayer *pPlayer, CBaseEntity *pBase)
@@ -11,26 +11,28 @@ void CScannable::UpdateScanTime(float scantime, CBasePlayer *pPlayer, CBaseEntit
 	//problem: i don't know how to call this when a scan is aborted.
 	//possible workaround: a periodically called think function
 	//maybe schedule think on first scan and stop on abort? that seems like a not too expensive option to me.
-	pPlayer->SetScannedEntity(pBase);
+	//another possibility would be to call a cscannable function that fires the output from outside,
+	//since scanvisor has enough info to do that
+	
 
-	if (m_bScanned)
+	if (m_bScanComplete && !m_bMessageSent)
 	{
 		SendShowScanInfo(pPlayer, pBase);
+		m_bMessageSent = true;
 	}
 	else
 	{
-		if (scantime <= m_flLastScanTime)//can't be, that means a new scan is started
+		if (scantime == 0)
 		{
 			m_OnScanStarted.FireOutput(pPlayer, pBase);
 			m_flLastScanTime = scantime;
-			Msg("Scanning %f\n", scantime);
+			m_bMessageSent = false;
 		}
 		else
 		{
 			if (scantime >= m_flRequiredScanTime)
 			{
-				
-				m_bScanned = true;
+				m_bScanComplete = true;
 			}
 		}
 		m_flLastScanTime = scantime;

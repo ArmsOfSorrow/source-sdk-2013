@@ -11,7 +11,6 @@ CWeaponScanvisor::CWeaponScanvisor()
 {
 	m_bIsCurrentlyScanning = false;
 	m_bShowingScannables = false;
-	m_nOldButtonState = 0;
 }
 
 void CWeaponScanvisor::Activate()
@@ -47,6 +46,7 @@ void CWeaponScanvisor::PrimaryAttack()
 /*
 Fires a trace forward to check if there is an object in 
 front of the player and sets the target member of this class.
+If a valid target is already set, it doesn't do anything.
 */
 void CWeaponScanvisor::AcquireTarget(CBasePlayer *pPlayer)
 {
@@ -63,16 +63,14 @@ void CWeaponScanvisor::AcquireTarget(CBasePlayer *pPlayer)
 	if (result.m_pEnt && result.DidHitNonWorldEntity())
 	{
 		m_pTarget = result.m_pEnt;
-	}
-	else
-	{
-		//invalidate target
-		m_pTarget = nullptr;
+		pPlayer->SetScannedEntity(m_pTarget);
 	}
 }
 
 void CWeaponScanvisor::ItemPreFrame()
 {
+	BaseClass::ItemPreFrame();
+
 	CBasePlayer *pPlayer = ToBasePlayer(GetOwner());
 	
 	//before the player moves, set the right state for primary attack if the attack button is pressed.
@@ -83,25 +81,15 @@ void CWeaponScanvisor::ItemPreFrame()
 		{
 			m_bIsCurrentlyScanning = true;
 		}
-		else if ((pPlayer->m_nButtons & IN_ATTACK) && !(m_nOldButtonState & IN_ATTACK))
-		{
-			//we're starting a new scan...
-			m_flScanTime = 0;
-			m_bIsCurrentlyScanning = true;
-		}
 		else
 		{
-			//we're not scanning
-			m_pTarget = nullptr;
-			pPlayer->SetScannedEntity(NULL);
-			m_flScanTime = 0;
+			//we're not scanning, invalidate target
 			m_bIsCurrentlyScanning = false;
+			m_pTarget = nullptr;
+			pPlayer->SetScannedEntity(nullptr);
+			m_flScanTime = 0;
 		}
-
-		m_nOldButtonState = pPlayer->m_nButtons;
 	}
-
-	BaseClass::ItemPreFrame(); //should this be done before our stuff or after?
 }
 
 bool CWeaponScanvisor::Holster(CBaseCombatWeapon *pSwitchingTo)

@@ -37,6 +37,7 @@ private:
 	int m_nOldButtonState;
 	float m_flLastInputTime;
 	const float m_flFadeThreshold = 0.5f;
+	bool m_bFadingOut;
 	bool m_bScanCompleted;
 	bool m_bShouldDraw;
 	bool m_bOldDrawState;
@@ -65,6 +66,7 @@ CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName)
 
 	m_nOldButtonState = 0;
 	m_flLastInputTime = 0.0f;
+	m_bFadingOut = false;
 	m_bScanCompleted = false;
 	m_bShouldDraw = false;
 	m_bOldDrawState = false;
@@ -77,6 +79,7 @@ CHudScanInfo::CHudScanInfo(const char *pElementName) : CHudElement(pElementName)
 	if (m_pScanTextLabel)
 	{
 		m_pScanTextLabel->SetProportional(true);
+		m_pScanTextLabel->SetVisible(true);
 	}
 }
 
@@ -141,6 +144,8 @@ void CHudScanInfo::ApplySchemeSettings(vgui::IScheme *pScheme)
 
 void CHudScanInfo::ProcessInput()
 {
+	CHudElement::ProcessInput();
+	
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
 	if (pPlayer)
 	{
@@ -195,12 +200,14 @@ bool CHudScanInfo::ShouldDraw()
 		if (pPlayer->GetScannedEntity() && m_bScanCompleted)
 		{
 			m_bShouldDraw = true;
+			m_bFadingOut = false;
 		}
 		else
 		{
 			//we don't have a scanned entity anymore
 			m_bScanCompleted = false;
 			m_bShouldDraw = false;
+			m_bFadingOut = true;
 		}
 	}
 	
@@ -213,7 +220,8 @@ bool CHudScanInfo::ShouldDraw()
 void CHudScanInfo::Paint()
 {
 	//maybe check for player state/entity flags to not draw the HUD under special circumstances
-	
+	BaseClass::Paint();
+
 	SetAlpha(m_flAlphaOverride);
 	g_pMatSystemSurface->DrawSetTextColor(255,255,255, m_flTextAlphaOverride);
 
@@ -223,13 +231,14 @@ void CHudScanInfo::Paint()
 void CHudScanInfo::MsgFunc_ShowScanInfo(bf_read &msg)
 {
 	//use tokens only, as string size is limited to 128 bytes.
-	if (!IsVisible())
-	{
+	//if (!IsVisible())
+	//{
 		msg.ReadString(m_szToken, sizeof(m_szToken));
 		m_bScanCompleted = true;
 		m_pScanTextLabel->SetText(m_szToken);
+		DevMsg("got text message\n");
 		//m_pScanTextLabel->GotoTextStart();
-	}
+	//}
 }
 
 //heads up: there is a bug probably related to the animations:
@@ -243,14 +252,16 @@ void CHudScanInfo::OnThink()
 
 	if (gHUD.m_iKeyBits & IN_ATTACK)
 	{
-		if (m_bOldDrawState == false && m_bScanCompleted)
+		
+		if ((m_bOldDrawState == false && m_bScanCompleted) || (m_bFadingOut && m_bScanCompleted)) //or if we're fading out
 		{
-			//we cannot trust that ShouldDraw will run before the next OnThink call.
-			//(maybe calling ShouldDraw in that condition above would be less ugly)
+			DevMsg("fading in %d %d %d\n", m_bOldDrawState, m_bScanCompleted, m_bFadingOut);
 			m_bOldDrawState = true;
 
 			//fade in, as we were not drawing in the last frame
 			sp->GetAnimationController()->StartAnimationSequence("OpenScanInfo");
+			
+			m_bFadingOut = false;
 			engine->ClientCmd("pause");
 		}
 
@@ -258,10 +269,11 @@ void CHudScanInfo::OnThink()
 	}
 	else
 	{
-		if (m_nOldButtonState & IN_ATTACK)
+		if ((m_nOldButtonState & IN_ATTACK) /*&& !(gHUD.m_iKeyBits & IN_ATTACK)*/ && !(m_bScanCompleted))
 		{
-			//start fading out here.
+			//start fading out here if we released the attack button
 			sp->GetAnimationController()->StartAnimationSequence("FadeOutScanInfo");
+			DevMsg("fading out %d %d\n", m_nOldButtonState & IN_ATTACK, gHUD.m_iKeyBits & IN_ATTACK);
 			engine->ClientCmd("pause");
 		}
 	}

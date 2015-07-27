@@ -33,7 +33,6 @@ private:
 	bool m_bIsCurrentlyScanning;
 	bool m_bShowingScannables;
 	float m_flScanTime;
-	int m_nOldButtonState;
 
 	CBaseEntity *m_pTarget;
 

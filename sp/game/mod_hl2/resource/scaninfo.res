@@ -11,6 +11,7 @@
 		"visible" "1"
 		"enabled" "1"
 		"textAlignment" "north-west"
+		"text"	"welcome to ltp"
 		"AutoResize" "3"
 		
 		//LoadControlSettings treats every child as a panel, that means font
