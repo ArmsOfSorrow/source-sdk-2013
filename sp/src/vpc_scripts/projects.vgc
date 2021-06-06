@@ -46,6 +46,11 @@ $Project "server"
 	"game\server\server_episodic.vpc"	[($WIN32||$X360||$POSIX) && $EPISODIC]
 }
 
+$Project "not_so_server"
+{
+	"game\server\server_not_so_hl2.vpc" [$WINDOWS||$X360||$POSIX]
+}
+
 $Project "mathlib"
 {
 	"mathlib\mathlib.vpc" [$WINDOWS||$X360||$POSIX]

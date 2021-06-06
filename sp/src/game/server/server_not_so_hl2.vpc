@@ -1,0 +1,24 @@
+$Macro SRCDIR		"..\.."
+$Macro GAMENAME 	"notsohl2" [!$SOURCESDK]
+$Macro GAMENAME 	"mod_notsohl2" [$SOURCESDK]
+
+$Include "$SRCDIR\game\server\server_min.vpc"
+
+$Configuration
+{
+	$Compiler
+	{
+        // If we ever add our own files to this, we could make our own game/shared/notsohl2 folder.
+		// $AdditionalIncludeDirectories	"$BASE;$SRCDIR\game\shared\hl2;.\hl2"
+        $AdditionalIncludeDirectories	"$BASE"
+
+        // Not sure if we need HL2_DLL define; there's GAME_DLL defined in the base build script,
+        // but not sure how sloppy the code is with mixing the two.
+		// $PreprocessorDefinitions		"$BASE;HL2_DLL;USES_SAVERESTORE"
+        $PreprocessorDefinitions		"$BASE"
+	}
+}
+
+$Project "Server (Not so HL2)"
+{
+}
