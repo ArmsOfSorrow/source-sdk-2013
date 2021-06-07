@@ -16,3 +16,9 @@ Yeah, let's make a copy of server_base.vpc and strip it down as much as we can, 
 Now we can use vpc to generate our VS2013 project like this: `.\devtools\bin\vpc.exe +not_so_server`
 
 VS 2019 does open it without complaining, but we'll need VS2013 to actually build it because of v120_xp toolset :/
+
+## Minimizing server.dll
+
+I'm using the existing gameinterface.cpp and copy-pasted the vpc file and commented out lots of stuff, now just trying to build gameinterface.cpp and everything it needs, but...that thing is a messy hairball of code, man. It even pulls in AI and physics and all that shit, wtf.
+
+Maybe it's easier to start from zero after all?
