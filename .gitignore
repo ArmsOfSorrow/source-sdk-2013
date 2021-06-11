@@ -18,6 +18,7 @@ ipch
 *.opensdf
 *.idb
 *.vcxproj
+*.vcxproj.filters
 *.sln
 
 # OSX/Linux build products
@@ -53,4 +54,11 @@ config.cfg
 
 # shader files
 *.tmp
+
+# vscode dir
+*/.vs
+
+# vpc temp files
+*.vpc_crc
+*.vpc.sentinel
 

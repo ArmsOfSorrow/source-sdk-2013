@@ -215,14 +215,11 @@ bool CServerGameDLL::DLLInit( CreateInterfaceFn appSystemFactory,
 	ConnectTier2Libraries( &appSystemFactory, 1 );
 	ConnectTier3Libraries( &appSystemFactory, 1 );
 
+	Msg("DLLInit");
+
 	// Connected in ConnectTier1Libraries
 	if ( cvar == NULL )
 		return false;
-
-// #ifndef _X360
-// 	s_SteamAPIContext.Init();
-// 	s_SteamGameServerAPIContext.Init();
-// #endif
 
 	// init each (seperated for ease of debugging)
 	if ( (engine = (IVEngineServer*)appSystemFactory(INTERFACEVERSION_VENGINESERVER, NULL)) == NULL )
@@ -644,11 +641,7 @@ void CServerGameDLL::ServerActivate( edict_t *pEdictList, int edictCount, int cl
 		{
 			MDLCACHE_CRITICAL_SECTION();
 
-			// BeginCheckChainedActivate();
 			pClass->Activate();
-			
-			// We don't care if it finished activating if it decided to remove itself.
-			// EndCheckChainedActivate( !( pClass->GetEFlags() & EFL_KILLME ) ); 
 		}
 	}
 
@@ -657,10 +650,10 @@ void CServerGameDLL::ServerActivate( edict_t *pEdictList, int edictCount, int cl
 	CBaseEntity::SetAllowPrecache( false );
 
 	// only display the think limit when the game is run with "developer" mode set
-	if ( !g_pDeveloper->GetInt() )
-	{
-		// think_limit.SetValue( 0 );
-	}
+	// if ( !g_pDeveloper->GetInt() )
+	// {
+	// 	// think_limit.SetValue( 0 );
+	// }
 }
 
 //-----------------------------------------------------------------------------
@@ -701,36 +694,27 @@ void CServerGameDLL::GameFrame( bool simulating )
 
 	float oldframetime = gpGlobals->frametime;
 
-// #ifdef _DEBUG
-// 	// For profiling.. let them enable/disable the networkvar manual mode stuff.
-// 	g_bUseNetworkVars = s_UseNetworkVars.GetBool();
-// #endif
-
-	extern void GameStartFrame( void );
-	extern void ServiceEventQueue( void );
-	extern void Physics_RunThinkFunctions( bool simulating );
+	// extern void GameStartFrame( void );
+	// extern void ServiceEventQueue( void );
+	// extern void Physics_RunThinkFunctions( bool simulating );
 
 	// Delete anything that was marked for deletion
 	//  outside of server frameloop (e.g., in response to concommand)
 	gEntList.CleanupDeleteList();
 
 	IGameSystem::FrameUpdatePreEntityThinkAllSystems();
-	GameStartFrame();
-
-// #ifdef USE_NAV_MESH
-// 	TheNavMesh->Update();
-// #endif
+	// GameStartFrame();
 
 	// UpdateQueryCache();
 	// g_pServerBenchmark->UpdateBenchmark();
 
-	Physics_RunThinkFunctions( simulating );
+	// Physics_RunThinkFunctions( simulating );
 	
 	IGameSystem::FrameUpdatePostEntityThinkAllSystems();
 
 	// UNDONE: Make these systems IGameSystems and move these calls into FrameUpdatePostEntityThink()
 	// service event queue, firing off any actions whos time has come
-	ServiceEventQueue();
+	// ServiceEventQueue();
 
 	// free all ents marked in think functions
 	gEntList.CleanupDeleteList();
@@ -742,24 +726,6 @@ void CServerGameDLL::GameFrame( bool simulating )
 	{
 		g_pGameRules->EndGameFrame();
 	}
-
-	// if ( trace_report.GetBool() )
-	// {
-	// 	int total = 0, totals[3];
-	// 	for ( int i = 0; i < 3; i++ )
-	// 	{
-	// 		totals[i] = enginetrace->GetStatByIndex( i, true );
-	// 		if ( totals[i] > 0 )
-	// 		{
-	// 			total += totals[i];
-	// 		}
-	// 	}
-
-	// 	if ( total )
-	// 	{
-	// 		Msg("Trace: %d, contents %d, enumerate %d\n", totals[0], totals[1], totals[2] );
-	// 	}
-	// }
 
 	// Any entities that detect network state changes on a timer do it here.
 	g_NetworkPropertyEventMgr.FireEvents();
@@ -775,51 +741,8 @@ void CServerGameDLL::PreClientUpdate( bool simulating )
 {
 	if ( !simulating )
 		return;
-
-	/*
-	if (game_speeds.GetInt())
-	{
-		DrawMeasuredSections();
-	}
-	*/
-
-//#ifdef _DEBUG  - allow this in release for now
-	// DrawAllDebugOverlays();
-//#endif
 	
 	IGameSystem::PreClientUpdateAllSystems();
-
-// #ifdef _DEBUG
-// 	if ( sv_showhitboxes.GetInt() == -1 )
-// 		return;
-
-// 	if ( sv_showhitboxes.GetInt() == 0 )
-// 	{
-// 		// assume it's text
-// 		CBaseEntity *pEntity = NULL;
-
-// 		while (1)
-// 		{
-// 			pEntity = gEntList.FindEntityByName( pEntity, sv_showhitboxes.GetString() );
-// 			if ( !pEntity )
-// 				break;
-
-// 			CBaseAnimating *anim = dynamic_cast< CBaseAnimating * >( pEntity );
-
-// 			if (anim)
-// 			{
-// 				anim->DrawServerHitboxes();
-// 			}
-// 		}
-// 		return;
-// 	}
-
-// 	CBaseAnimating *anim = dynamic_cast< CBaseAnimating * >( CBaseEntity::Instance( engine->PEntityOfEntIndex( sv_showhitboxes.GetInt() ) ) );
-// 	if ( !anim )
-// 		return;
-
-// 	anim->DrawServerHitboxes();
-// #endif
 }
 
 void CServerGameDLL::Think( bool finalTick )
@@ -868,14 +791,6 @@ void CServerGameDLL::LevelShutdown( void )
 
 	// In case we quit out during initial load
 	CBaseEntity::SetAllowPrecache( false );
-
-// #ifdef USE_NAV_MESH
-// 	// reset the Navigation Mesh
-// 	if ( TheNavMesh )
-// 	{
-// 		TheNavMesh->Reset();
-// 	}
-// #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1388,14 +1303,12 @@ void CServerGameEnts::CheckTransmit( CCheckTransmitInfo *pInfo, const unsigned s
 	CBasePlayer *pRecipientPlayer = static_cast<CBasePlayer*>( pRecipientEntity );
 	const int skyBoxArea = pRecipientPlayer->m_Local.m_skybox3d.area;
 
-#ifndef _X360
 	const bool bIsHLTV = pRecipientPlayer->IsHLTV();
 	const bool bIsReplay = pRecipientPlayer->IsReplay();
 
 	// m_pTransmitAlways must be set if HLTV client
 	Assert( bIsHLTV == ( pInfo->m_pTransmitAlways != NULL) ||
 		    bIsReplay == ( pInfo->m_pTransmitAlways != NULL) );
-#endif
 
 	for ( int i=0; i < nEdicts; i++ )
 	{
@@ -1422,12 +1335,11 @@ void CServerGameEnts::CheckTransmit( CCheckTransmitInfo *pInfo, const unsigned s
 				// mark entity for sending
 				pInfo->m_pTransmitEdict->Set( iEdict );
 	
-#ifndef _X360
 				if ( bIsHLTV || bIsReplay )
 				{
 					pInfo->m_pTransmitAlways->Set( iEdict );
 				}
-#endif	
+
 				CServerNetworkProperty *pEnt = static_cast<CServerNetworkProperty*>( pEdict->GetNetworkable() );
 				if ( !pEnt )
 					break;
@@ -1466,7 +1378,6 @@ void CServerGameEnts::CheckTransmit( CCheckTransmitInfo *pInfo, const unsigned s
 
 		CServerNetworkProperty *netProp = static_cast<CServerNetworkProperty*>( pEdict->GetNetworkable() );
 
-#ifndef _X360
 		if ( bIsHLTV || bIsReplay )
 		{
 			// for the HLTV/Replay we don't cull against PVS
@@ -1480,7 +1391,6 @@ void CServerGameEnts::CheckTransmit( CCheckTransmitInfo *pInfo, const unsigned s
 			}
 			continue;
 		}
-#endif
 
 		// Always send entities in the player's 3d skybox.
 		// Sidenote: call of AreaNum() ensures that PVS data is up to date for this entity

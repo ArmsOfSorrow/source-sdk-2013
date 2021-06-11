@@ -36,3 +36,13 @@ Maybe it's easier to copy-paste gameinterface.cpp to back it up, then delete shi
 
 Generating projects can be done with `creategameprojects.bat`. Cool.
 
+Lots of it is gone already. I deleted AI, bunch of other stuff and it's down from 3441 lines to 2243 at the time of writing.  
+Lots of global variables in there that are referenced in wholly different files. Man. Such a fucking hairball. But interesting nonetheless.
+
+Some of it we'll never be able to delete (unless we exclude the offending files from the build)...but that's okay. We're learning here :)
+
+So we can start into the main menu now, set breakpoints and all that shit...but map loading is broken because we removed scenefilecache and some other part (sceneentity.cpp) unconditionally expects it to be there. smh.  
+Do we want to make that work again? Or do we go ahead and delete even more shit?
+
+Neither Msg() nor DevMsg() seem to end up in the conosle. Do I need to set developer convar for it to work? Wiki says no for Msg(). Maybe it's server vs client console?
+DLLInit Msg() shows up in debug output. Maybe it uses OutputDebugString? Yes it does. OutputDebugStringA it is.

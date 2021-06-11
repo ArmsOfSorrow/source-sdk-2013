@@ -871,7 +871,7 @@ int CHLClient::Init( CreateInterfaceFn appSystemFactory, CreateInterfaceFn physi
 	ConnectTier3Libraries( &appSystemFactory, 1 );
 
 #ifndef NO_STEAM
-	// ClientSteamContext().Activate();
+	ClientSteamContext().Activate();
 #endif
 
 	// We aren't happy unless we get all of our interfaces.
@@ -1201,7 +1201,7 @@ void CHLClient::Shutdown( void )
 	ClearKeyValuesCache();
 
 #ifndef NO_STEAM
-	// ClientSteamContext().Shutdown();
+	ClientSteamContext().Shutdown();
 #endif
 
 #ifdef WORKSHOP_IMPORT_ENABLED
