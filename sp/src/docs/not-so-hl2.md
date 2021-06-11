@@ -22,3 +22,17 @@ VS 2019 does open it without complaining, but we'll need VS2013 to actually buil
 I'm using the existing gameinterface.cpp and copy-pasted the vpc file and commented out lots of stuff, now just trying to build gameinterface.cpp and everything it needs, but...that thing is a messy hairball of code, man. It even pulls in AI and physics and all that shit, wtf.
 
 Maybe it's easier to start from zero after all?
+
+## Starting from zero (well, not entirely zero)
+
+Let's try a different way. Empty folder + a copy of gameinterface.h/.cpp. Now let's delete everything and replace it with debug prints to build a really bare-bones server DLL.
+
+This thing is massive. It's probably gonna blow up the first time I try to load it, if it even compiles.  
+Maybe making a bare-bones server DLL is too much for now.
+
+Maybe it's easier to copy-paste gameinterface.cpp to back it up, then delete shit from it one by one. Such as AI.
+
+## Deleting shit from gameinterface.cpp
+
+Generating projects can be done with `creategameprojects.bat`. Cool.
+
