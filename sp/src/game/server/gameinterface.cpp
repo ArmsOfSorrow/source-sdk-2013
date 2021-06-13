@@ -518,80 +518,81 @@ bool CServerGameDLL::IsRestoring()
 bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, char const *pOldLevel, char const *pLandmarkName, bool loadGame, bool background )
 {
 	VPROF("CServerGameDLL::LevelInit");
+	DevMsg("LevelInit: pMapName: %s", pMapName);
 
 	//Tony; parse custom manifest if exists!
 	// ParseParticleEffectsMap( pMapName, false );
 
 	// IGameSystem::LevelInitPreEntityAllSystems() is called when the world is precached
 	// That happens either in LoadGameState() or in MapEntity_ParseAllEntities()
-	if ( loadGame )
-	{
-		if ( pOldLevel )
-		{
-			gpGlobals->eLoadType = MapLoad_Transition;
-		}
-		else
-		{
-			gpGlobals->eLoadType = MapLoad_LoadGame;
-		}
+	// if ( loadGame )
+	// {
+	// 	if ( pOldLevel )
+	// 	{
+	// 		gpGlobals->eLoadType = MapLoad_Transition;
+	// 	}
+	// 	else
+	// 	{
+	// 		gpGlobals->eLoadType = MapLoad_LoadGame;
+	// 	}
 
-		// BeginRestoreEntities();
-		if ( !engine->LoadGameState( pMapName, 1 ) )
-		{
-			if ( pOldLevel )
-			{
-				MapEntity_ParseAllEntities( pMapEntities );
-			}
-			else
-			{
-				// Regular save load case
-				return false;
-			}
-		}
+	// 	// BeginRestoreEntities();
+	// 	if ( !engine->LoadGameState( pMapName, 1 ) )
+	// 	{
+	// 		if ( pOldLevel )
+	// 		{
+	// 			MapEntity_ParseAllEntities( pMapEntities );
+	// 		}
+	// 		else
+	// 		{
+	// 			// Regular save load case
+	// 			return false;
+	// 		}
+	// 	}
 
-		if ( pOldLevel )
-		{
-			engine->LoadAdjacentEnts( pOldLevel, pLandmarkName );
-		}
+	// 	if ( pOldLevel )
+	// 	{
+	// 		engine->LoadAdjacentEnts( pOldLevel, pLandmarkName );
+	// 	}
 
-		if ( g_OneWayTransition )
-		{
-			engine->ClearSaveDirAfterClientLoad();
-		}
+	// 	if ( g_OneWayTransition )
+	// 	{
+	// 		engine->ClearSaveDirAfterClientLoad();
+	// 	}
 
-		if ( pOldLevel /*&& sv_autosave.GetBool() == true */)
-		{
-			// This is a single-player style level transition.
-			// Queue up an autosave one second into the level
-			CBaseEntity *pAutosave = CBaseEntity::Create( "logic_autosave", vec3_origin, vec3_angle, NULL );
-			if ( pAutosave )
-			{
-				g_EventQueue.AddEvent( pAutosave, "Save", 1.0, NULL, NULL );
-				g_EventQueue.AddEvent( pAutosave, "Kill", 1.1, NULL, NULL );
-			}
-		}
-	}
-	else
-	{
-		if ( background )
-		{
-			gpGlobals->eLoadType = MapLoad_Background;
-		}
-		else
-		{
-			gpGlobals->eLoadType = MapLoad_NewGame;
-		}
+	// 	if ( pOldLevel /*&& sv_autosave.GetBool() == true */)
+	// 	{
+	// 		// This is a single-player style level transition.
+	// 		// Queue up an autosave one second into the level
+	// 		CBaseEntity *pAutosave = CBaseEntity::Create( "logic_autosave", vec3_origin, vec3_angle, NULL );
+	// 		if ( pAutosave )
+	// 		{
+	// 			g_EventQueue.AddEvent( pAutosave, "Save", 1.0, NULL, NULL );
+	// 			g_EventQueue.AddEvent( pAutosave, "Kill", 1.1, NULL, NULL );
+	// 		}
+	// 	}
+	// }
+	// else
+	// {
+		// if ( background )
+		// {
+		// 	gpGlobals->eLoadType = MapLoad_Background;
+		// }
+		// else
+		// {
+		// 	gpGlobals->eLoadType = MapLoad_NewGame;
+		// }
 
 		// Clear out entity references, and parse the entities into it.
-		g_MapEntityRefs.Purge();
-		CMapLoadEntityFilter filter;
-		MapEntity_ParseAllEntities( pMapEntities, &filter );
+		// g_MapEntityRefs.Purge();
+		// CMapLoadEntityFilter filter;
+		// MapEntity_ParseAllEntities( pMapEntities, &filter );
 
 		// g_pServerBenchmark->StartBenchmark();
 
 		// Now call the mod specific parse
-		LevelInit_ParseAllEntities( pMapEntities );
-	}
+		// LevelInit_ParseAllEntities( pMapEntities );
+	// }
 
 	// Check low violence settings for this map
 	// g_RagdollLVManager.SetLowViolence( pMapName );
@@ -601,17 +602,17 @@ bool CServerGameDLL::LevelInit( const char *pMapName, char const *pMapEntities, 
 	// PrecachePointTemplates();
 
 	// load MOTD from file into stringtable
-	LoadMessageOfTheDay();
+	// LoadMessageOfTheDay();
 
 	// Sometimes an ent will Remove() itself during its precache, so RemoveImmediate won't happen.
 	// This makes sure those ents get cleaned up.
-	gEntList.CleanupDeleteList();
+	// gEntList.CleanupDeleteList();
 
-	g_OneWayTransition = false;
+	// g_OneWayTransition = false;
 
-	// clear any pending autosavedangerous
-	m_fAutoSaveDangerousTime = 0.0f;
-	m_fAutoSaveDangerousMinHealthToCommit = 0.0f;
+	// // clear any pending autosavedangerous
+	// m_fAutoSaveDangerousTime = 0.0f;
+	// m_fAutoSaveDangerousMinHealthToCommit = 0.0f;
 	return true;
 }
 
@@ -626,28 +627,29 @@ bool g_bCheckForChainedActivate; //citizen17 needs this
 
 void CServerGameDLL::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
+	DevMsg("ServerActivate; edictCount: %i, clientMax: %i\n", edictCount, clientMax);
 	// HACKHACK: UNDONE: We need to redesign the main loop with respect to save/load/server activate
-	if ( g_InRestore )
-		return;
+	//if ( g_InRestore )
+	//	return;
 
-	if ( gEntList.ResetDeleteList() != 0 )
-	{
-		Msg( "ERROR: Entity delete queue not empty on level start!\n" );
-	}
+	//if ( gEntList.ResetDeleteList() != 0 )
+	//{
+	//	Msg( "ERROR: Entity delete queue not empty on level start!\n" );
+	//}
 
-	for ( CBaseEntity *pClass = gEntList.FirstEnt(); pClass != NULL; pClass = gEntList.NextEnt(pClass) )
-	{
-		if ( pClass && !pClass->IsDormant() )
-		{
-			MDLCACHE_CRITICAL_SECTION();
+	// for ( CBaseEntity *pClass = gEntList.FirstEnt(); pClass != NULL; pClass = gEntList.NextEnt(pClass) )
+	//{
+	//	if ( pClass && !pClass->IsDormant() )
+	//	{
+	//		MDLCACHE_CRITICAL_SECTION();
 
-			pClass->Activate();
-		}
-	}
+	//		pClass->Activate();
+	//	}
+	//}
 
-	IGameSystem::LevelInitPostEntityAllSystems();
-	// No more precaching after PostEntityAllSystems!!!
-	CBaseEntity::SetAllowPrecache( false );
+	// IGameSystem::LevelInitPostEntityAllSystems();
+	//// No more precaching after PostEntityAllSystems!!!
+	//CBaseEntity::SetAllowPrecache( false );
 
 	// only display the think limit when the game is run with "developer" mode set
 	// if ( !g_pDeveloper->GetInt() )

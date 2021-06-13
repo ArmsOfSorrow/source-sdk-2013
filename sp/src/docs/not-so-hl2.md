@@ -44,5 +44,14 @@ Some of it we'll never be able to delete (unless we exclude the offending files 
 So we can start into the main menu now, set breakpoints and all that shit...but map loading is broken because we removed scenefilecache and some other part (sceneentity.cpp) unconditionally expects it to be there. smh.  
 Do we want to make that work again? Or do we go ahead and delete even more shit?
 
-Neither Msg() nor DevMsg() seem to end up in the conosle. Do I need to set developer convar for it to work? Wiki says no for Msg(). Maybe it's server vs client console?
+Neither Msg() nor DevMsg() seem to end up in the source vgui console. Do I need to set developer convar for it to work? Wiki says no for Msg(). Maybe it's server vs client console?
 DLLInit Msg() shows up in debug output. Maybe it uses OutputDebugString? Yes it does. OutputDebugStringA it is.
+
+Commenting out the entirety of LevelInit breaks shit down the line. Surprise. Wait, the crash is in tier0. Do we get an invalid pointer? No, I deref'd where I shouldn't. Now map load crashes because of failing asserts for AI entities (which I don't care about).
+
+Now we get some interesting behavior: it tries to load the map, but errors out with `Disconnect: Connection rejected by game
+.`. I wonder why that happens :D  
+We're returning the same values...but maybe we're not setting some globals that engine expects? Who knows :D
+
+I did comment out ServerActivate and LevelInit.
+Maybe it's because there's no entities?
